@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="GACManager.GACManagerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:GACManager="clr-namespace:GACManager"
+             xmlns:apexConverters="clr-namespace:Apex.Converters;assembly=Apex"
+             xmlns:apexControls="clr-namespace:Apex.Controls;assembly=Apex"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    
+    <UserControl.Resources>
+        <apexConverters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <UserControl.DataContext>
+        <GACManager:GACManagerViewModel />
+    </UserControl.DataContext>
+    <Grid>
+        <DockPanel>
+            
+            <!-- The top of the dock panel is a toolbar. -->
+            <ToolBar DockPanel.Dock="Top">
+                <Button Content="Refresh" Command="{Binding RefreshAssembliesCommand}" />
+                <TextBox Width="120" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+            </ToolBar>
+            
+            <!-- The bottom of the dock panel is a status bar. -->
+            <StatusBar DockPanel.Dock="Bottom">
+                <StatusBarItem>
+                    <TextBlock Text="{Binding StatusInfo}" />
+                </StatusBarItem>
+            </StatusBar>
+            
+            <Grid>
+            
+            <!-- The main list view of assemblies. -->
+            <ListView ItemsSource="{Binding AssembliesCollectionView}" SelectedItem="{Binding SelectedAssembly}">
+                <ListView.View>
+                    <GridView>
+                            <GridViewColumn Header="Name">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <apexControls:ApexGrid Columns="Auto,*">
+                                            <Image 
+                                                Source="/GACManager;component/Images/AssemblyIcon.png" Width="16" Height="16"
+                                                   RenderOptions.BitmapScalingMode="Linear" Margin="0,2,8,2"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding DisplayName}" />
+                                        </apexControls:ApexGrid>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                                <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path}" />
+                            <GridViewColumn Header="Version" DisplayMemberBinding="{Binding Version}" />
+                            <GridViewColumn Header="Culture" DisplayMemberBinding="{Binding Culture}" />
+                            <GridViewColumn Header="Public Key Token" DisplayMemberBinding="{Binding PublicKeyToken}" />
+                            <GridViewColumn Header="Processor Architecture" DisplayMemberBinding="{Binding ProcessorArchitecture}" />
+                            <GridViewColumn Header="Custom" DisplayMemberBinding="{Binding Custom}" />
+                        </GridView>
+                </ListView.View>
+            </ListView>
+            
+            <!-- An overlay showing loading information. -->
+                <Border Background="White" Visibility="{Binding RefreshAssembliesCommand.IsExecuting, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <apexControls:ApexGrid HorizontalAlignment="Center" VerticalAlignment="Center" Rows="Auto,Auto">
+                        <TextBlock Grid.Row="0" Text="Loading Assembly Information..." />
+                        <apexControls:CircularProgressBar Grid.Row="1" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                        </apexControls:CircularProgressBar>
+                    </apexControls:ApexGrid>
+                </Border>
+
+
+            </Grid>
+        </DockPanel>
+        
+            
+    </Grid>
+</UserControl>
