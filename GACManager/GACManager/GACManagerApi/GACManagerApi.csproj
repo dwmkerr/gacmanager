@@ -49,6 +49,8 @@
     <Compile Include="Fusion\ASM_DISPLAY_FLAGS.cs" />
     <Compile Include="Fusion\ASM_NAME.cs" />
     <Compile Include="Fusion\ASM_CACHE_FLAGS.cs" />
+    <Compile Include="Fusion\ASSEMBLY_INFO.cs" />
+    <Compile Include="Fusion\CREATE_ASM_NAME_OBJ_FLAGS.cs" />
     <Compile Include="Fusion\FusionImports.cs" />
     <Compile Include="Fusion\IInstallReferenceEnum.cs" />
     <Compile Include="Fusion\IInstallReferenceItem.cs" />

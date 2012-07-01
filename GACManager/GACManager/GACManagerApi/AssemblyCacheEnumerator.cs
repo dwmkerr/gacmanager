@@ -29,7 +29,7 @@ namespace GACManagerApi
             if (assemblyName != null)
             {
                 hr = FusionImports.CreateAssemblyNameObject(out fusionName, assemblyName,
-                    CreateAssemblyNameObjectFlags.CANOF_PARSE_DISPLAY_NAME, IntPtr.Zero);
+                    CREATE_ASM_NAME_OBJ_FLAGS.CANOF_PARSE_DISPLAY_NAME, IntPtr.Zero);
                 if(hr < 0)
                     Marshal.ThrowExceptionForHR(hr);
             }
@@ -39,7 +39,7 @@ namespace GACManagerApi
                     out assemblyEnumerator,
                     IntPtr.Zero,
                     fusionName,
-                    AssemblyCacheFlags.GAC,
+                    ASM_CACHE_FLAGS.ASM_CACHE_GAC, 
                     IntPtr.Zero);
                 if (hr < 0)
                     Marshal.ThrowExceptionForHR(hr);
