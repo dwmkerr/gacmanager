@@ -1,0 +1,8 @@
+﻿<Window x:Class="GACManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:GACManager="clr-namespace:GACManager"
+        Title="GAC Manager" Height="500" Width="600">
+    <Grid>
+        <GACManager:GACManagerView />
+    </Grid>
+</Window>
