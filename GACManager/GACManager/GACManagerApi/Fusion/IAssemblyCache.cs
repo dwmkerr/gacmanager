@@ -17,7 +17,7 @@ namespace GACManagerApi.Fusion
         int QueryAssemblyInfo(
             int flags,
             [MarshalAs(UnmanagedType.LPWStr)] String assemblyName,
-            ref AssemblyInfo assemblyInfo);
+            ref ASSEMBLY_INFO assemblyInfo);
 
         [PreserveSig()]
         int Reserved(

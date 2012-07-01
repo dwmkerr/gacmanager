@@ -37,12 +37,6 @@ namespace GACManagerApi.Fusion
     }
 
 
-    internal enum CREATE_ASM_NAME_OBJ_FLAGS
-    {
-        CANOF_DEFAULT = 0,
-        CANOF_PARSE_DISPLAY_NAME = 1,
-    }
-    
     [StructLayout(LayoutKind.Sequential)]
     public class InstallReference
     {
@@ -80,17 +74,7 @@ namespace GACManagerApi.Fusion
         [MarshalAs(UnmanagedType.LPWStr)] private String identifier;
         [MarshalAs(UnmanagedType.LPWStr)] private String description;
     }
-
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct AssemblyInfo
-    {
-        public int cbAssemblyInfo; // size of this structure for future expansion
-        public int assemblyFlags;
-        public long assemblySizeInKB;
-        [MarshalAs(UnmanagedType.LPWStr)] public String currentAssemblyPath;
-        public int cchBuf; // size of path buf.
-    }
-
+    
     [ComVisible(false)]
     public class InstallReferenceGuid
     {
@@ -175,7 +159,7 @@ namespace GACManagerApi.Fusion
                 throw new ArgumentException("Invalid name", "assemblyName");
             }
 
-            AssemblyInfo aInfo = new AssemblyInfo();
+            var aInfo = new ASSEMBLY_INFO();
 
             aInfo.cchBuf = 1024;
             // Get a string with the desired length
@@ -209,7 +193,7 @@ namespace GACManagerApi.Fusion
             int hr = FusionImports.CreateAssemblyNameObject(
                 out fusionName,
                 assemblyName,
-                CreateAssemblyNameObjectFlags.CANOF_PARSE_DISPLAY_NAME,
+                CREATE_ASM_NAME_OBJ_FLAGS.CANOF_PARSE_DISPLAY_NAME, 
                 IntPtr.Zero);
 
             if (hr >= 0)

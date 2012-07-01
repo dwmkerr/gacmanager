@@ -22,7 +22,7 @@ namespace GACManagerApi.Fusion
         public static extern int CreateAssemblyNameObject(
             out IAssemblyName ppAssemblyNameObj,
             [MarshalAs(UnmanagedType.LPWStr)] String szAssemblyName,
-            CreateAssemblyNameObjectFlags flags,
+            CREATE_ASM_NAME_OBJ_FLAGS flags,
             IntPtr pvReserved);
 
         [DllImport(FusionDll)]
