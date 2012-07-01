@@ -22,6 +22,7 @@ namespace GACManager
             Custom = model.Custom;
             ProcessorArchitecture = model.ProcessorArchitecture;
             Culture = model.Culture;
+            RuntimeVersion = model.RuntimeVersion;
             if(model.PublicKeyToken != null)
                 PublicKeyToken = "0x" + BitConverter.ToString(model.PublicKeyToken).Replace("-", string.Empty);
 
@@ -198,6 +199,23 @@ namespace GACManager
         {
             get { return (string)GetValue(CustomProperty); }
             set { SetValue(CustomProperty, value); }
+        }
+
+        
+        /// <summary>
+        /// The NotifyingProperty for the RuntimeVersion property.
+        /// </summary>
+        private readonly NotifyingProperty RuntimeVersionProperty =
+          new NotifyingProperty("RuntimeVersion", typeof(string), default(string));
+
+        /// <summary>
+        /// Gets or sets RuntimeVersion.
+        /// </summary>
+        /// <value>The value of RuntimeVersion.</value>
+        public string RuntimeVersion
+        {
+            get { return (string)GetValue(RuntimeVersionProperty); }
+            set { SetValue(RuntimeVersionProperty, value); }
         }
     }
 }
