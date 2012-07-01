@@ -48,11 +48,12 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                                <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path}" />
                             <GridViewColumn Header="Version" DisplayMemberBinding="{Binding Version}" />
-                            <GridViewColumn Header="Culture" DisplayMemberBinding="{Binding Culture}" />
                             <GridViewColumn Header="Public Key Token" DisplayMemberBinding="{Binding PublicKeyToken}" />
+                            <GridViewColumn Header="RuntimeVersion" DisplayMemberBinding="{Binding RuntimeVersion}" />
+                            <GridViewColumn Header="Culture" DisplayMemberBinding="{Binding Culture}" />
                             <GridViewColumn Header="Processor Architecture" DisplayMemberBinding="{Binding ProcessorArchitecture}" />
+                                <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path}" />
                             <GridViewColumn Header="Custom" DisplayMemberBinding="{Binding Custom}" />
                         </GridView>
                 </ListView.View>

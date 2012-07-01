@@ -40,8 +40,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Apex">
-      <HintPath>..\..\..\TFS\Apex\Apex\Core\Apex\bin\Release\Apex.dll</HintPath>
+    <Reference Include="Apex, Version=1.4.0.0, Culture=neutral, PublicKeyToken=98d06957926c086d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\Apex.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

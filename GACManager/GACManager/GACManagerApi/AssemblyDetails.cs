@@ -4,12 +4,13 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using GACManagerApi.Fusion;
+using System.Reflection;
 
 namespace GACManagerApi
 {
     public class AssemblyDetails
     {
-        internal void Load(IAssemblyName assemblyName)
+        public void Load(IAssemblyName assemblyName)
         {
             var stringBuilder = new StringBuilder(BufferLength);
             int iLen = BufferLength;
@@ -18,10 +19,14 @@ namespace GACManagerApi
                 Marshal.ThrowExceptionForHR(hr);
             DisplayName = stringBuilder.ToString();
 
-            LoadPropertiesFromDisplayName(DisplayName);
+            //  Load properties from the display name.
+          //  LoadPropertiesFromDisplayName(DisplayName);
 
             //  Load the path.
             Path = AssemblyCache.QueryAssemblyInfo(DisplayName);
+
+            //  Load details from via reflection.
+         //   LoadAdditionalDetailsViaReflection();
 
             /*
             StringBuilder sName = new StringBuilder(BufferLength);
@@ -53,10 +58,10 @@ namespace GACManagerApi
                 var versionString = properties[1];
                 versionString = versionString.Substring(versionString.IndexOf('=') + 1);
                 var versionParts = versionString.Split('.');
-                MajorVersion = Convert.ToInt16(versionParts[0]);
-                MinorVersion = Convert.ToInt16(versionParts[1]);
-                BuildNumber = Convert.ToInt16(versionParts[2]);
-                RevisionNumber = Convert.ToInt16(versionParts[3]);
+                MajorVersion = Convert.ToUInt16(versionParts[0]);
+                MinorVersion = Convert.ToUInt16(versionParts[1]);
+                BuildNumber = Convert.ToUInt16(versionParts[2]);
+                RevisionNumber = Convert.ToUInt16(versionParts[3]);
             }
             catch (Exception)
             {
@@ -122,19 +127,35 @@ namespace GACManagerApi
             BuildNumber = GetShortProperty(assemblyName, ASM_NAME.ASM_NAME_BUILD_NUMBER);
             RevisionNumber = GetShortProperty(assemblyName, ASM_NAME.ASM_NAME_REVISION_NUMBER);
             Culture = GetStringProperty(assemblyName, ASM_NAME.ASM_NAME_CULTURE);
-
             PublicKeyToken = GetByteArrayProperty(assemblyName, ASM_NAME.ASM_NAME_PUBLIC_KEY_TOKEN);
             PublicKey = GetByteArrayProperty(assemblyName, ASM_NAME.ASM_NAME_PUBLIC_KEY);
         }
 
-        internal short GetShortProperty(IAssemblyName name, ASM_NAME propertyName)
+        private void LoadAdditionalDetailsViaReflection()
+        {
+            //  Load reflection details.
+            try
+            {
+                if (!loadedAssemblies.ContainsKey(Path))
+                    loadedAssemblies[Path] = Assembly.ReflectionOnlyLoadFrom(Path);
+                RuntimeVersion = loadedAssemblies[Path].ImageRuntimeVersion;
+            }
+            catch
+            {
+            }   
+        }
+
+        private static Dictionary<string, Assembly> loadedAssemblies = new Dictionary<string, Assembly>();
+
+        internal UInt16 GetShortProperty(IAssemblyName name, ASM_NAME propertyName)
         {
             uint bufferSize = 512;
             IntPtr buffer = Marshal.AllocHGlobal((int)bufferSize);
             name.GetProperty(propertyName, buffer, ref bufferSize);
-            short result = Marshal.ReadInt16(buffer);
+            byte low = Marshal.ReadByte(buffer);
+            byte high = Marshal.ReadByte(buffer, 1);
             Marshal.FreeHGlobal(buffer);
-            return result;
+            return (UInt16)(low + (high << 8));
         }
 
         internal string GetStringProperty(IAssemblyName name, ASM_NAME propertyName)
@@ -165,13 +186,14 @@ namespace GACManagerApi
         public string DisplayName { get; private set; }
         public byte[] PublicKeyToken { get; private set; }
         public byte[] PublicKey { get; private set; }
-        public short MajorVersion { get; private set; }
-        public short MinorVersion { get; private set; }
-        public short BuildNumber { get; private set; }
-        public short RevisionNumber { get; private set; }
+        public ushort MajorVersion { get; private set; }
+        public ushort MinorVersion { get; private set; }
+        public ushort BuildNumber { get; private set; }
+        public ushort RevisionNumber { get; private set; }
         public string Culture { get; private set; }
         public string Path { get; private set; }
         public string ProcessorArchitecture { get; private set; }
         public string Custom { get; private set; }
+        public string RuntimeVersion { get; private set; }
     }
 }
