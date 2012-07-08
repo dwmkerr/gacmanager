@@ -1,0 +1,20 @@
+Todo for 1.0
+
+Create main Icon
+
+Create popup for assembly details
+
+Enable Install
+
+Enable Uninstall
+
+Use Apex SearchTextBox
+
+Enable Export
+
+Open assembly file properties command
+
+Sort out the image blurring on the toolbar buttons
+
+Done
+* Open assembly location command

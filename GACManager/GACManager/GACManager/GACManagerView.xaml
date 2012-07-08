@@ -19,8 +19,20 @@
             
             <!-- The top of the dock panel is a toolbar. -->
             <ToolBar DockPanel.Dock="Top">
-                <Button Content="Refresh" Command="{Binding RefreshAssembliesCommand}" />
-                <TextBox Width="120" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                <Button Command="{Binding RefreshAssembliesCommand}" ToolTip="Refresh the list of Assemblies" >
+                    <Image Source="/GACManager;component/Images/Refresh.png" Width="16" Stretch="None" RenderOptions.BitmapScalingMode="Linear" />
+                </Button>
+                <Button Command="{Binding UninstallAssemblyCommand}" CommandParameter="{Binding SelectedAssembly}"
+                        ToolTip="Uninstall the selected assembly">
+                    <Image Source="/GACManager;component/Images/UninstallAssembly.png" Width="16" Stretch="None" RenderOptions.BitmapScalingMode="Linear" />
+                </Button>
+                <Button Command="{Binding InstallAssemblyCommand}"
+                        ToolTip="Install a new assembly">
+                    <Image Source="/GACManager;component/Images/InstallAssembly.png" Width="16" Stretch="None" RenderOptions.BitmapScalingMode="Linear" />
+                </Button>
+                <Button Command="{Binding OpenAssemblyLocationCommand}" Content="Open Folder"
+                        CommandParameter="{Binding SelectedAssembly}"/>
+                <apexControls:SearchTextBox CueText="Search" Width="120" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
             </ToolBar>
             
             <!-- The bottom of the dock panel is a status bar. -->
@@ -33,44 +45,41 @@
             <Grid>
             
             <!-- The main list view of assemblies. -->
-            <ListView ItemsSource="{Binding AssembliesCollectionView}" SelectedItem="{Binding SelectedAssembly}">
-                <ListView.View>
-                    <GridView>
-                            <GridViewColumn Header="Name">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <apexControls:ApexGrid Columns="Auto,*">
-                                            <Image 
+                <apexControls:ApexGrid Columns="*">
+                    <ListView ItemsSource="{Binding AssembliesCollectionView}" SelectedItem="{Binding SelectedAssembly}"
+                              MouseDoubleClick="ListView_MouseDoubleClick">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Name">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <apexControls:ApexGrid Columns="Auto,*">
+                                                <Image 
                                                 Source="/GACManager;component/Images/AssemblyIcon.png" Width="16" Height="16"
                                                    RenderOptions.BitmapScalingMode="Linear" Margin="0,2,8,2"/>
-                                            <TextBlock Grid.Column="1" Text="{Binding DisplayName}" />
-                                        </apexControls:ApexGrid>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn Header="Version" DisplayMemberBinding="{Binding Version}" />
-                            <GridViewColumn Header="Public Key Token" DisplayMemberBinding="{Binding PublicKeyToken}" />
-                            <GridViewColumn Header="RuntimeVersion" DisplayMemberBinding="{Binding RuntimeVersion}" />
-                            <GridViewColumn Header="Culture" DisplayMemberBinding="{Binding Culture}" />
-                            <GridViewColumn Header="Processor Architecture" DisplayMemberBinding="{Binding ProcessorArchitecture}" />
+                                                <TextBlock Grid.Column="1" Text="{Binding DisplayName}" />
+                                            </apexControls:ApexGrid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Version" DisplayMemberBinding="{Binding Version}" />
+                                <GridViewColumn Header="Public Key Token" DisplayMemberBinding="{Binding PublicKeyToken}" />
+                                <GridViewColumn Header="RuntimeVersion" DisplayMemberBinding="{Binding RuntimeVersion}" />
+                                <GridViewColumn Header="Culture" DisplayMemberBinding="{Binding Culture}" />
+                                <GridViewColumn Header="Processor Architecture" DisplayMemberBinding="{Binding ProcessorArchitecture}" />
                                 <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path}" />
-                            <GridViewColumn Header="Custom" DisplayMemberBinding="{Binding Custom}" />
-                        </GridView>
-                </ListView.View>
-            </ListView>
+                                <GridViewColumn Header="Custom" DisplayMemberBinding="{Binding Custom}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    
+                    <Border Background="#66ffffff" Visibility="{Binding RefreshAssembliesCommand.IsExecuting, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <apexControls:CircularProgressBar Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    
+                </apexControls:ApexGrid>
             
-            <!-- An overlay showing loading information. -->
-                <Border Background="White" Visibility="{Binding RefreshAssembliesCommand.IsExecuting, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <apexControls:ApexGrid HorizontalAlignment="Center" VerticalAlignment="Center" Rows="Auto,Auto">
-                        <TextBlock Grid.Row="0" Text="Loading Assembly Information..." />
-                        <apexControls:CircularProgressBar Grid.Row="1" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center">
-
-                        </apexControls:CircularProgressBar>
-                    </apexControls:ApexGrid>
-                </Border>
-
-
-            </Grid>
+           </Grid>
         </DockPanel>
         
             

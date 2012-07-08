@@ -8,6 +8,8 @@ using System.Windows.Data;
 using Apex;
 using Apex.MVVM;
 using GACManager.Models;
+using GACManagerApi;
+using GACManagerApi.Fusion;
 
 namespace GACManager
 {
@@ -21,7 +23,9 @@ namespace GACManager
         {
             //  Create the refresh assemblies command.
             RefreshAssembliesCommand = new AsynchronousCommand(DoRefreshAssembliesCommand, true);
-
+            UninstallAssemblyCommand = new Command(DoUninstallAssemblyCommand, false);
+            OpenAssemblyLocationCommand = new Command(() => {}, false);
+            InstallAssemblyCommand = new Command(() => {});
 
         }
 
@@ -47,6 +51,7 @@ namespace GACManager
 
                         //  Add it to the collection.
                         Assemblies.Add(viewModel);
+                        
                     });
 
             //  Set the resulting status info.
@@ -55,11 +60,13 @@ namespace GACManager
                     {
             AssembliesCollectionView = new ListCollectionView(Assemblies.ToList());
 
-            AssembliesCollectionView.SortDescriptions.Add(new SortDescription("DisplayName", ListSortDirection.Ascending));
+            AssembliesCollectionView.SortDescriptions.Add(new SortDescription("FullName", ListSortDirection.Ascending));
                         AssembliesCollectionView.Filter += Filter;
                         StatusInfo = "Loaded " + Assemblies.Count + " assemblies in " + timeTaken.TotalMilliseconds +
                                      " milliseconds";
+                        
                     });
+
 
         }
 
@@ -70,7 +77,8 @@ namespace GACManager
                 return false;
 
             return string.IsNullOrEmpty(SearchText) ||
-                assemblyViewModel.DisplayName.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1;
+                assemblyViewModel.DisplayName.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1 ||
+                assemblyViewModel.PublicKeyToken.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1;
         }
 
         /// <summary>
@@ -119,7 +127,14 @@ namespace GACManager
         public GACAssemblyViewModel SelectedAssembly
         {
             get { return (GACAssemblyViewModel)GetValue(SelectedAssemblyProperty); }
-            set { SetValue(SelectedAssemblyProperty, value); }
+            set 
+            { 
+                SetValue(SelectedAssemblyProperty, value);
+                UninstallAssemblyCommand.CanExecute = value != null;
+                OpenAssemblyLocationCommand.CanExecute = value != null;
+                if(SelectedAssembly != null)
+                    SelectedAssembly.LoadExtendedPropertiesCommand.DoExecute(null);
+            }
         }
 
         
@@ -170,5 +185,47 @@ namespace GACManager
                     AssembliesCollectionView.Refresh();
             }
         }
+
+        
+
+        /// <summary>
+        /// Performs the UninstallAssembly command.
+        /// </summary>
+        /// <param name="parameter">The UninstallAssembly command parameter.</param>
+        private void DoUninstallAssemblyCommand(object parameter)
+        {
+            //  The parameter must be an assembly.
+            var assemblyViewModel = (GACAssemblyViewModel)parameter;
+
+            //  Create an assembly cache.
+            IASSEMBLYCACHE_UNINSTALL_DISPOSITION disposition = IASSEMBLYCACHE_UNINSTALL_DISPOSITION.Unknown;
+            AssemblyCache.UninstallAssembly(assemblyViewModel.InternalAssemblyDetails.QualifiedAssemblyName,
+                assemblyViewModel.InternalAssemblyDetails.InstallReferences.FirstOrDefault(), out disposition);
+        }
+
+        /// <summary>
+        /// Gets the UninstallAssembly command.
+        /// </summary>
+        /// <value>The value of .</value>
+        public Command UninstallAssemblyCommand
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Gets the InstallAssembly command.
+        /// </summary>
+        /// <value>The value of .</value>
+        public Command InstallAssemblyCommand
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Gets the open assembly location command.
+        /// </summary>
+        public Command OpenAssemblyLocationCommand { get; private set; }
     }
 }
