@@ -10,37 +10,69 @@ namespace GACManagerApi
 {
     public class AssemblyDetails
     {
-        public void Load(IAssemblyName assemblyName)
+        public AssemblyDetails()
         {
+                InstallReferences = new List<FUSION_INSTALL_REFERENCE>();
+        }
+        public void Initialise(IAssemblyName assemblyName)
+        {
+            //  Get the full name.
             var stringBuilder = new StringBuilder(BufferLength);
             int iLen = BufferLength;
             int hr = assemblyName.GetDisplayName(stringBuilder, ref iLen, ASM_DISPLAY_FLAGS.ALL);
             if (hr < 0)
                 Marshal.ThrowExceptionForHR(hr);
-            DisplayName = stringBuilder.ToString();
+            FullName = stringBuilder.ToString();
+
+            //  Get the qualified name.
+            stringBuilder = new StringBuilder(BufferLength);
+            iLen = BufferLength;
+            hr = assemblyName.GetDisplayName(stringBuilder, ref iLen, ASM_DISPLAY_FLAGS.ASM_DISPLAYF_VERSION 
+                | ASM_DISPLAY_FLAGS.ASM_DISPLAYF_CULTURE
+                | ASM_DISPLAY_FLAGS.ASM_DISPLAYF_PUBLIC_KEY_TOKEN
+                | ASM_DISPLAY_FLAGS.ASM_DISPLAYF_PROCESSORARCHITECTURE);
+            if (hr < 0)
+                Marshal.ThrowExceptionForHR(hr);
+            QualifiedAssemblyName = stringBuilder.ToString();
+
 
             //  Load properties from the display name.
-          //  LoadPropertiesFromDisplayName(DisplayName);
+            LoadPropertiesFromDisplayName(FullName);
 
             //  Load the path.
-            Path = AssemblyCache.QueryAssemblyInfo(DisplayName);
+            Path = AssemblyCache.QueryAssemblyInfo(FullName);
 
             //  Load details from via reflection.
          //   LoadAdditionalDetailsViaReflection();
 
-            /*
-            StringBuilder sName = new StringBuilder(BufferLength);
-            iLen = BufferLength;
-            hr = assemblyName.GetName(ref iLen, sName);
-            if (hr < 0)
-                Marshal.ThrowExceptionForHR(hr);
-            Name = sName.ToString();
-*/
+        }
+
+        public void LoadExtendedProperties()
+        {
+            if(extendedPropertiesLoaded)
+                return;
+            
+            LoadAdditionalDetailsViaReflection();
+            LoadInstallReferences();
+
+            extendedPropertiesLoaded = true;
+        }
+
+        private void LoadInstallReferences()
+        {
+            //  Create an install reference enumerator.
+            InstallReferenceEnumerator enumerator = new InstallReferenceEnumerator(FullName);
+            var reference = enumerator.GetNextReference();
+            while(reference != null)
+            {
+                InstallReferences.Add(reference);
+                reference = enumerator.GetNextReference();
+            }
         }
 
         private void LoadPropertiesFromDisplayName(string displayName)
         {
-            var properties = displayName.Split(',');
+            var properties = displayName.Split(new string[] {", "}, StringSplitOptions.None);
 
             //  Name should be first.
             try
@@ -52,74 +84,102 @@ namespace GACManagerApi
                 Name = "Unknown";
             }
 
+            var versionString = (from p in properties where p.StartsWith("Version=") select p).FirstOrDefault();
+            var cultureString = (from p in properties where p.StartsWith("Culture=") select p).FirstOrDefault();
+            var publicKeyTokenString = (from p in properties where p.StartsWith("PublicKeyToken=") select p).FirstOrDefault();
+            var processorArchitectureString = (from p in properties where p.StartsWith("processorArchitecture=") select p).FirstOrDefault();
+            var customString = (from p in properties where p.StartsWith("Custom=") select p).FirstOrDefault();
+
             //  Then we should have version.
-            try
+            if (!string.IsNullOrEmpty(versionString))
             {
-                var versionString = properties[1];
-                versionString = versionString.Substring(versionString.IndexOf('=') + 1);
-                var versionParts = versionString.Split('.');
-                MajorVersion = Convert.ToUInt16(versionParts[0]);
-                MinorVersion = Convert.ToUInt16(versionParts[1]);
-                BuildNumber = Convert.ToUInt16(versionParts[2]);
-                RevisionNumber = Convert.ToUInt16(versionParts[3]);
-            }
-            catch (Exception)
-            {
-                MajorVersion = 0;
-                MinorVersion = 0;
-                BuildNumber = 0;
-                RevisionNumber = 0;
+                try
+                {
+                    versionString = versionString.Substring(versionString.IndexOf('=') + 1);
+                    var versionParts = versionString.Split('.');
+                    MajorVersion = Convert.ToUInt16(versionParts[0]);
+                    MinorVersion = Convert.ToUInt16(versionParts[1]);
+                    BuildNumber = Convert.ToUInt16(versionParts[2]);
+                    RevisionNumber = Convert.ToUInt16(versionParts[3]);
+                }
+                catch (Exception)
+                {
+                    MajorVersion = 0;
+                    MinorVersion = 0;
+                    BuildNumber = 0;
+                    RevisionNumber = 0;
+                }
             }
 
             //  Then culture.
-            try
+            if (!string.IsNullOrEmpty(cultureString))
             {
-                var cultureString = properties[2];
-                cultureString = cultureString.Substring(cultureString.IndexOf('=') + 1);
-                Culture = cultureString;
-            }
-            catch (Exception)
-            {
-                Culture = "Unknown";
+                try
+                {
+                    cultureString = cultureString.Substring(cultureString.IndexOf('=') + 1);
+                    Culture = cultureString;
+                }
+                catch (Exception)
+                {
+                }
             }
 
             //  Then public key token.
-            try
+            if (!string.IsNullOrEmpty(publicKeyTokenString))
             {
-                var publicKeyTokenString = properties[3];
-                publicKeyTokenString = publicKeyTokenString.Substring(publicKeyTokenString.IndexOf('=') + 1);
-                PublicKeyToken = null;//todo
-            }
-            catch (Exception)
-            {
-                PublicKeyToken = null;
+                try
+                {
+                    publicKeyTokenString = publicKeyTokenString.Substring(publicKeyTokenString.IndexOf('=') + 1);
+                    PublicKeyToken = HexToData(publicKeyTokenString);
+                }
+                catch (Exception)
+                {
+                    PublicKeyToken = null;
+                }
             }
 
             //  Then processor architecture.
-            try
+            if (!string.IsNullOrEmpty(processorArchitectureString))
             {
-                var processorArchitectureString = properties[4];
-                processorArchitectureString = processorArchitectureString.Substring(processorArchitectureString.IndexOf('=') + 1);
-                ProcessorArchitecture = processorArchitectureString;
-            }
-            catch (Exception)
-            {
-                ProcessorArchitecture = "Unknown";
+                try
+                {
+                    processorArchitectureString =
+                        processorArchitectureString.Substring(processorArchitectureString.IndexOf('=') + 1);
+                    ProcessorArchitecture = processorArchitectureString;
+                }
+                catch (Exception)
+                {
+                }
             }
 
-            //  Then custom.
-            try
+            if (!string.IsNullOrEmpty(customString))
             {
-                var customString = properties[5];
-                customString = customString.Substring(customString.IndexOf('=') + 1);
-                Custom = customString;
-            }
-            catch (Exception)
-            {
-                Custom = "Unknown";
+                //  Then custom.
+                try
+                {
+                    customString = customString.Substring(customString.IndexOf('=') + 1);
+                    Custom = customString;
+                }
+                catch (Exception)
+                {
+                }
             }
         }
+        private static byte[] HexToData(string hexString)
+        {
+            if (hexString == null)
+                return null;
 
+            if (hexString.Length % 2 == 1)
+                hexString = '0' + hexString; // Up to you whether to pad the first or last byte
+
+            byte[] data = new byte[hexString.Length / 2];
+
+            for (int i = 0; i < data.Length; i++)
+                data[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+
+            return data;
+        }
         private void LoadPropertiesFromCOMInterface(IAssemblyName assemblyName)
         {
             MajorVersion = GetShortProperty(assemblyName, ASM_NAME.ASM_NAME_MAJOR_VERSION);
@@ -137,7 +197,7 @@ namespace GACManagerApi
             try
             {
                 if (!loadedAssemblies.ContainsKey(Path))
-                    loadedAssemblies[Path] = Assembly.ReflectionOnlyLoadFrom(Path);
+                    loadedAssemblies[Path] = Assembly.ReflectionOnlyLoad(QualifiedAssemblyName);
                 RuntimeVersion = loadedAssemblies[Path].ImageRuntimeVersion;
             }
             catch
@@ -182,8 +242,10 @@ namespace GACManagerApi
 
         private const int BufferLength = 65535;
 
+        private bool extendedPropertiesLoaded;
+
         public string Name { get; private set; }
-        public string DisplayName { get; private set; }
+        public string FullName { get; private set; }
         public byte[] PublicKeyToken { get; private set; }
         public byte[] PublicKey { get; private set; }
         public ushort MajorVersion { get; private set; }
@@ -195,5 +257,17 @@ namespace GACManagerApi
         public string ProcessorArchitecture { get; private set; }
         public string Custom { get; private set; }
         public string RuntimeVersion { get; private set; }
+
+        /// <summary>
+        /// Gets the qualified name of the assembly. This is useful for Install/Uninstall.
+        /// v1.0/v1.1 assemblies: "name, Version=xx, Culture=xx, PublicKeyToken=xx".
+        /// v2.0 assemblies: "name, Version=xx, Culture=xx, PublicKeyToken=xx, ProcessorArchitecture=xx".
+        /// </summary>
+        /// <value>
+        /// The name of the qualified assembly.
+        /// </value>
+        public string QualifiedAssemblyName { get; private set; }
+
+        public List<FUSION_INSTALL_REFERENCE> InstallReferences { get; private set; } 
     }
 }

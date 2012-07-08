@@ -10,8 +10,8 @@ namespace GACManagerApi.Fusion
         int UninstallAssembly(
             int flags,
             [MarshalAs(UnmanagedType.LPWStr)] String assemblyName,
-            InstallReference refData,
-            out AssemblyCacheUninstallDisposition disposition);
+            FUSION_INSTALL_REFERENCE refData,
+            out IASSEMBLYCACHE_UNINSTALL_DISPOSITION disposition);
 
         [PreserveSig()]
         int QueryAssemblyInfo(
@@ -33,6 +33,6 @@ namespace GACManagerApi.Fusion
         int InstallAssembly(
             int flags,
             [MarshalAs(UnmanagedType.LPWStr)] String assemblyFilePath,
-            InstallReference refData);
+            FUSION_INSTALL_REFERENCE refData);
     }
 }

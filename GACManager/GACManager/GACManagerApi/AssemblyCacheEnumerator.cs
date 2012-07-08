@@ -79,7 +79,7 @@ namespace GACManagerApi
 
             //  Create the assembly details.
             var assemblyDetails = new AssemblyDetails();
-            assemblyDetails.Load(fusionName);
+            assemblyDetails.Initialise(fusionName);
 
             return assemblyDetails;
         }

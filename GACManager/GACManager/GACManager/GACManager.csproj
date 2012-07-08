@@ -63,6 +63,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="AssemblyView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GACManagerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -75,19 +79,30 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AssemblyView.xaml.cs">
+      <DependentUpon>AssemblyView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GACAssemblyViewModel.cs" />
     <Compile Include="GACManagerView.xaml.cs">
       <DependentUpon>GACManagerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="GACManagerViewModel.cs" />
+    <Compile Include="InstallReferenceViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Popups\LoadingAssembliesPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\GACManagerModel.cs" />
     <Compile Include="Models\IGACManagerModel.cs" />
+    <Compile Include="Popups\LoadingAssembliesPopup.xaml.cs">
+      <DependentUpon>LoadingAssembliesPopup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -105,6 +120,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -119,6 +135,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\AssemblyIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\InstallAssembly.png" />
+    <Resource Include="Images\UninstallAssembly.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Refresh.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

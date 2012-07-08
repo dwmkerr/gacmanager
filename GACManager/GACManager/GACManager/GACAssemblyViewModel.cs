@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using Apex;
 using Apex.MVVM;
 using GACManager.Models;
 using GACManagerApi;
+using GACManagerApi.Fusion;
 
 namespace GACManager
 {
@@ -14,8 +16,10 @@ namespace GACManager
     {
         public override void FromModel(AssemblyDetails model)
         {
+            InternalAssemblyDetails = model;
+
             DisplayName = model.Name;
-            FullName = model.DisplayName;
+            FullName = model.FullName;
             Path = model.Path;
             Version = model.MajorVersion + "." + model.MinorVersion + "." +
                                 model.BuildNumber + "." + model.RevisionNumber;
@@ -24,8 +28,9 @@ namespace GACManager
             Culture = model.Culture;
             RuntimeVersion = model.RuntimeVersion;
             if(model.PublicKeyToken != null)
-                PublicKeyToken = "0x" + BitConverter.ToString(model.PublicKeyToken).Replace("-", string.Empty);
+                PublicKeyToken = BitConverter.ToString(model.PublicKeyToken).Replace("-", string.Empty);
 
+            LoadExtendedPropertiesCommand = new AsynchronousCommand(DoLoadExtendedPropertiesCommand);
         }
 
         public override void ToModel(AssemblyDetails model)
@@ -34,15 +39,20 @@ namespace GACManager
         }
 
         /// <summary>
-        /// The NotifyingProperty for the DisplayName property.
+        /// Gets the internal assembly details, which is wht we're displaying data for.
+        /// </summary>
+        public AssemblyDetails InternalAssemblyDetails { get; private set; }
+
+        /// <summary>
+        /// The NotifyingProperty for the FullName property.
         /// </summary>
         private readonly NotifyingProperty DisplayNameProperty =
           new NotifyingProperty("DisplayName", typeof(string), default(string));
 
         /// <summary>
-        /// Gets or sets DisplayName.
+        /// Gets or sets FullName.
         /// </summary>
-        /// <value>The value of DisplayName.</value>
+        /// <value>The value of FullName.</value>
         public string DisplayName
         {
             get { return (string)GetValue(DisplayNameProperty); }
@@ -216,6 +226,59 @@ namespace GACManager
         {
             get { return (string)GetValue(RuntimeVersionProperty); }
             set { SetValue(RuntimeVersionProperty, value); }
+        }
+
+        
+
+        /// <summary>
+        /// Performs the LoadExtendedProperties command.
+        /// </summary>
+        /// <param name="parameter">The LoadExtendedProperties command parameter.</param>
+        private void DoLoadExtendedPropertiesCommand(object parameter)
+        {
+            InternalAssemblyDetails.LoadExtendedProperties();
+
+            //  Set the extended properties.
+            LoadExtendedPropertiesCommand.ReportProgress(
+                ()
+                =>
+                {
+                    RuntimeVersion = InternalAssemblyDetails.RuntimeVersion;
+
+                    InstallReferences.Clear();
+                    foreach (var installReference in InternalAssemblyDetails.InstallReferences)
+                        InstallReferences.Add(new InstallReferenceViewModel()
+                                                  {
+                                                      Identifier = installReference.Identifier,
+                                                      Description = installReference.Description
+                                                  });
+                    });
+        }
+
+        /// <summary>
+        /// Gets the LoadExtendedProperties command.
+        /// </summary>
+        /// <value>The value of .</value>
+        public AsynchronousCommand LoadExtendedPropertiesCommand
+        {
+            get;
+            private set;
+        }
+
+        
+        /// <summary>
+        /// The InstallReferences observable collection.
+        /// </summary>
+        private ObservableCollection<InstallReferenceViewModel> InstallReferencesProperty =
+          new ObservableCollection<InstallReferenceViewModel>();
+
+        /// <summary>
+        /// Gets the InstallReferences observable collection.
+        /// </summary>
+        /// <value>The InstallReferences observable collection.</value>
+        public ObservableCollection<InstallReferenceViewModel> InstallReferences
+        {
+            get { return InstallReferencesProperty; }
         }
     }
 }

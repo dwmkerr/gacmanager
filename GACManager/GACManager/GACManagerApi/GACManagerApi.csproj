@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyCache.cs" />
     <Compile Include="AssemblyCacheEnumerator.cs" />
     <Compile Include="AssemblyDetails.cs" />
     <Compile Include="Fusion\ASM_DISPLAY_FLAGS.cs" />
@@ -52,12 +53,16 @@
     <Compile Include="Fusion\ASSEMBLY_INFO.cs" />
     <Compile Include="Fusion\CREATE_ASM_NAME_OBJ_FLAGS.cs" />
     <Compile Include="Fusion\FusionImports.cs" />
+    <Compile Include="Fusion\FUSION_INSTALL_REFERENCE.cs" />
+    <Compile Include="Fusion\IASSEMBLYCACHE_UNINSTALL_DISPOSITION.cs" />
     <Compile Include="Fusion\IInstallReferenceEnum.cs" />
     <Compile Include="Fusion\IInstallReferenceItem.cs" />
     <Compile Include="Fusion\Todo.cs" />
     <Compile Include="Fusion\IAssemblyEnum.cs" />
     <Compile Include="Fusion\IAssemblyCache.cs" />
     <Compile Include="Fusion\IAssemblyName.cs" />
+    <Compile Include="InstallReferenceEnumerator.cs" />
+    <Compile Include="InstallReferenceGuid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
