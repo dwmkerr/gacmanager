@@ -1,9 +1,166 @@
-﻿<Window x:Class="GACManager.MainWindow"
+﻿<apexControls:CustomWindow x:Class="GACManager.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:GACManager="clr-namespace:GACManager"
+        xmlns:apexControls="clr-namespace:Apex.Controls;assembly=Apex"
         xmlns:apexShells="clr-namespace:Apex.Shells;assembly=Apex"
+        MinHeight="350" MinWidth="525"
+        Background="White"
+        x:Name="zuneShell"
         Title="GAC Manager" Height="500" Width="600">
-    <apexShells:Shell>
-        <GACManager:GACManagerView />
-    </apexShells:Shell>
-</Window>
+
+    <!-- The resources. -->
+    <apexControls:CustomWindow.Resources>
+        <GACManager:WindowStateToBorderThicknessConverter x:Key="WindowStateToBorderThicknessConverter" />
+        <GACManager:WindowStateToButtonVisibilityConverter x:Key="WindowStateToButtonVisibilityConverter" />
+
+        <!-- A thumb style for an empty thumb. -->
+        <Style x:Key="EmptyThumbStyle" TargetType="Thumb">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Grid Background="{TemplateBinding Background}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </apexControls:CustomWindow.Resources>
+
+
+    <!-- Main window shell content grid. -->
+    <Grid>
+
+        <!-- Layout for the window borders. -->
+        <apexControls:ApexGrid Rows="Auto,*,Auto" Columns="Auto,*,Auto">
+
+            <!-- The top left border.  -->
+            <Thumb 
+                x:Name="thumbTopLeft"
+                Grid.Row="0" Grid.Column="0" Cursor="SizeNWSE" Style="{StaticResource EmptyThumbStyle}" 
+                Background="{Binding ElementName=zuneShell, Path=Background, Mode=OneWay}"
+                Width="{Binding ElementName=zuneShell, Path=WindowState, Mode=OneWay, Converter={StaticResource WindowStateToBorderThicknessConverter}, ConverterParameter=TopLeft}"
+                Height="{Binding ElementName=zuneShell, Path=WindowState, Mode=OneWay, Converter={StaticResource WindowStateToBorderThicknessConverter}, ConverterParameter=TopLeft}"
+                DragDelta="thumbTopLeft_DragDelta" />
+
+            <!-- The top border.  -->
+            <Thumb 
+                x:Name="thumbTop"
+                Grid.Row="0" Grid.Column="1" Cursor="SizeNS" Style="{StaticResource EmptyThumbStyle}" 
+                Background="{Binding ElementName=zuneShell, Path=Background, Mode=OneWay}"
+                Height="{Binding ElementName=zuneShell, Path=WindowState, Mode=OneWay, Converter={StaticResource WindowStateToBorderThicknessConverter}, ConverterParameter=Top}"
+                DragDelta="thumbTop_DragDelta" />
+
+            <!-- The top right border.  -->
+            <Thumb 
+                x:Name="thumbTopRight"
+                Grid.Row="0" Grid.Column="2" Cursor="SizeNESW" Style="{StaticResource EmptyThumbStyle}" 
+                Background="{Binding ElementName=zuneShell, Path=Background, Mode=OneWay}"
+                Width="{Binding ElementName=zuneShell, Path=WindowState, Mode=OneWay, Converter={StaticResource WindowStateToBorderThicknessConverter}, ConverterParameter=TopRight}"
+                Height="{Binding ElementName=zuneShell, Path=WindowState, Mode=OneWay, Converter={StaticResource WindowStateToBorderThicknessConverter}, ConverterParameter=TopRight}"
+                DragDelta="thumbTopRight_DragDelta" />
+
+            <!-- The left border.  -->
+            <Thumb 
+                x:Name="thumbLeft"
+                Grid.Row="1" Grid.Column="0" Cursor="SizeWE" Style="{StaticResource EmptyThumbStyle}" 
+                Background="{Binding ElementName=zuneShell, Path=Background, Mode=OneWay}"
+                Width="{Binding ElementName=zuneShell, Path=WindowState, Mode=OneWay, Converter={StaticResource WindowStateToBorderThicknessConverter}, ConverterParameter=Left}"
+                DragDelta="thumbLeft_DragDelta" />
+
+            <!-- The right border.  -->
+            <Thumb 
+                x:Name="thumbRight"
+                Grid.Row="1" Grid.Column="2" Cursor="SizeWE" Style="{StaticResource EmptyThumbStyle}" 
+                Background="{Binding ElementName=zuneShell, Path=Background, Mode=OneWay}"
+                Width="{Binding ElementName=zuneShell, Path=WindowState, Mode=OneWay, Converter={StaticResource WindowStateToBorderThicknessConverter}, ConverterParameter=Left}"
+                DragDelta="thumbRight_DragDelta" />
+
+            <!-- The bottom left border.  -->
+            <Thumb 
+                x:Name="thumbBottomLeft"
+                Grid.Row="2" Grid.Column="0" Cursor="SizeNESW" Style="{StaticResource EmptyThumbStyle}" 
+                Background="{Binding ElementName=zuneShell, Path=Background, Mode=OneWay}"
+                Width="{Binding ElementName=zuneShell, Path=WindowState, Mode=OneWay, Converter={StaticResource WindowStateToBorderThicknessConverter}, ConverterParameter=BottomLeft}"
+                Height="{Binding ElementName=zuneShell, Path=WindowState, Mode=OneWay, Converter={StaticResource WindowStateToBorderThicknessConverter}, ConverterParameter=BottomLeft}"
+                DragDelta="thumbBottomLeft_DragDelta" />
+
+            <!-- The bottom border.  -->
+            <Thumb 
+                x:Name="thumbBottom"
+                Grid.Row="2" Grid.Column="1" Cursor="SizeNS" Style="{StaticResource EmptyThumbStyle}" 
+                Background="{Binding ElementName=zuneShell, Path=Background, Mode=OneWay}"
+                Height="{Binding ElementName=zuneShell, Path=WindowState, Mode=OneWay, Converter={StaticResource WindowStateToBorderThicknessConverter}, ConverterParameter=Bottom}"
+                DragDelta="thumbBottom_DragDelta" />
+
+            <!-- The bottom right border.  -->
+            <Thumb 
+                x:Name="thumbBottomRight"
+                Grid.Row="2" Grid.Column="2" Cursor="SizeNWSE" Style="{StaticResource EmptyThumbStyle}" 
+                Background="{Binding ElementName=zuneShell, Path=Background, Mode=OneWay}"
+                Width="{Binding ElementName=zuneShell, Path=WindowState, Mode=OneWay, Converter={StaticResource WindowStateToBorderThicknessConverter}, ConverterParameter=BottomRight}"
+                Height="{Binding ElementName=zuneShell, Path=WindowState, Mode=OneWay, Converter={StaticResource WindowStateToBorderThicknessConverter}, ConverterParameter=BottomRight}"
+                DragDelta="thumbBottomRight_DragDelta" />
+
+            <!-- A border for dragging the window. -->
+            <Border 
+                x:Name="borderWindowTitle"
+                Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="24" 
+                Background="{Binding ElementName=zuneShell, Path=Background, Mode=OneWay}"
+                MouseLeftButtonDown="borderWindowTitle_MouseLeftButtonDown" />
+
+            <!-- The main view, actually fils the client area and chrome too. -->
+            <apexShells:Shell Grid.Row="1" Grid.Column="1" Margin="0,20,0,0">
+                
+            <GACManager:GACManagerView />
+            </apexShells:Shell>
+
+        </apexControls:ApexGrid>
+
+        <!-- The window controls. -->
+        <apexControls:ApexGrid Width="Auto" Height="Auto" HorizontalAlignment="Right" VerticalAlignment="Top">
+
+            <!-- A stack panel for window controls. -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="4">
+
+                <!-- Minimize. -->
+                <apexControls:ImageButton 
+                    x:Name="minimizeButton" Click="minimizeButton_Click"
+                    Padding="2" Margin="1" Cursor="Hand" ToolTip="Minimize"
+                    NormalImageSource="/GACManager;component/Resources/Images/Minimize.png"
+                    MouseOverImageSource="/GACManager;component/Resources/Images/MinimizeOver.png"
+                    Visibility="{Binding ElementName=zuneShell, Path=WindowState, 
+                    Converter={StaticResource WindowStateToButtonVisibilityConverter}, ConverterParameter=Minimize}" />
+
+                <!-- Restore. -->
+                <apexControls:ImageButton 
+                    x:Name="restoreButton" Click="restoreButton_Click"
+                    Padding="2" Margin="1" Cursor="Hand" ToolTip="Restore"
+                    NormalImageSource="/GACManager;component/Resources/Images/Restore.png"
+                    MouseOverImageSource="/GACManager;component/Resources/Images/RestoreOver.png"
+                    Visibility="{Binding ElementName=zuneShell, Path=WindowState, 
+                    Converter={StaticResource WindowStateToButtonVisibilityConverter}, ConverterParameter=Restore}" />
+
+                <!-- Maximize. -->
+                <apexControls:ImageButton 
+                    x:Name="maximizeButton" Click="maximizeButton_Click"
+                    Padding="2" Margin="1" Cursor="Hand" ToolTip="Maximize"
+                    NormalImageSource="/GACManager;component/Resources/Images/Maximize.png"
+                    MouseOverImageSource="/GACManager;component/Resources/Images/MaximizeOver.png"
+                    Visibility="{Binding ElementName=zuneShell, Path=WindowState, 
+                    Converter={StaticResource WindowStateToButtonVisibilityConverter}, ConverterParameter=Maximize}" />
+
+                <!-- Close. -->
+                <apexControls:ImageButton 
+                    x:Name="closeButton" Click="closeButton_Click"
+                    Padding="2" Margin="1" Cursor="Hand" ToolTip="Close"
+                    NormalImageSource="/GACManager;component/Resources/Images/Close.png"
+                    MouseOverImageSource="/GACManager;component/Resources/Images/CloseOver.png" />
+
+            </StackPanel>
+
+
+
+        </apexControls:ApexGrid>
+
+
+    </Grid>
+</apexControls:CustomWindow>
