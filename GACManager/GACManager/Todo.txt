@@ -1,8 +1,8 @@
 Todo for 1.0
 
-Create main Icon
+Context menu for items
 
-Create popup for assembly details
+Create main Icon
 
 Enable Install
 
@@ -18,3 +18,5 @@ Sort out the image blurring on the toolbar buttons
 
 Done
 * Open assembly location command
+
+* Create popup for assembly details
