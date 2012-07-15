@@ -8,6 +8,14 @@ using GACManagerApi.Fusion;
 namespace GACManagerApi
 {
     /// <summary>
+    /// AssemblyMustBeStronglyNamedException.
+    /// </summary>
+    public class AssemblyMustBeStronglyNamedException : Exception
+    {
+
+    }
+
+    /// <summary>
     /// The AssemblyCache class is a managed wrapper around the Fusion IAssemblyCache COM interface.
     /// </summary>
     [ComVisible(false)]
@@ -33,7 +41,10 @@ namespace GACManagerApi
 
             if (hr < 0)
             {
-                Marshal.ThrowExceptionForHR(hr);
+                if (hr == -2146234300 /*0x80131044*/)
+                    throw new AssemblyMustBeStronglyNamedException();
+                else
+                    Marshal.ThrowExceptionForHR(hr);
             }
         }
 

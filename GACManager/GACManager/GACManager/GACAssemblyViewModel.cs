@@ -8,6 +8,7 @@ using Apex.MVVM;
 using GACManager.Models;
 using GACManagerApi;
 using GACManagerApi.Fusion;
+using System.Windows;
 
 namespace GACManager
 {
@@ -31,6 +32,8 @@ namespace GACManager
                 PublicKeyToken = BitConverter.ToString(model.PublicKeyToken).Replace("-", string.Empty);
 
             LoadExtendedPropertiesCommand = new AsynchronousCommand(DoLoadExtendedPropertiesCommand);
+            CopyDisplayNameCommand = new Command(DoCopyDisplayNameCommand);
+            ShowFilePropertiesCommand = new Command(DoShowFilePropertiesCommand);
         }
 
         public override void ToModel(AssemblyDetails model)
@@ -279,6 +282,48 @@ namespace GACManager
         public ObservableCollection<InstallReferenceViewModel> InstallReferences
         {
             get { return InstallReferencesProperty; }
+        }
+
+
+
+        /// <summary>
+        /// Performs the CopyDisplayName command.
+        /// </summary>
+        /// <param name="parameter">The CopyDisplayName command parameter.</param>
+        private void DoCopyDisplayNameCommand(object parameter)
+        {
+            Clipboard.SetText(InternalAssemblyDetails.DisplayName);
+        }
+
+        /// <summary>
+        /// Gets the CopyDisplayName command.
+        /// </summary>
+        /// <value>The value of .</value>
+        public Command CopyDisplayNameCommand
+        {
+            get;
+            private set;
+        }
+
+
+
+        /// <summary>
+        /// Performs the ShowFileProperties command.
+        /// </summary>
+        /// <param name="parameter">The ShowFileProperties command parameter.</param>
+        private void DoShowFilePropertiesCommand(object parameter)
+        {
+            Interop.Shell.Shell32.ShowFileProperties(InternalAssemblyDetails.Path);
+        }
+
+        /// <summary>
+        /// Gets the ShowFileProperties command.
+        /// </summary>
+        /// <value>The value of .</value>
+        public Command ShowFilePropertiesCommand
+        {
+            get;
+            private set;
         }
     }
 }

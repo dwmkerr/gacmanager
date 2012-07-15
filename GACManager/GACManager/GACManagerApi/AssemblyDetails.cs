@@ -245,6 +245,7 @@ namespace GACManagerApi
         private bool extendedPropertiesLoaded;
 
         public string Name { get; private set; }
+        public string DisplayName { get { return QualifiedAssemblyName; } }
         public string FullName { get; private set; }
         public byte[] PublicKeyToken { get; private set; }
         public byte[] PublicKey { get; private set; }

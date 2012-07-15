@@ -14,6 +14,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Apex;
 using GACManager.Popups;
+using Microsoft.Win32;
+using GACManagerApi.Fusion;
+using GACManagerApi;
 
 namespace GACManager
 {
@@ -32,6 +35,77 @@ namespace GACManager
 
             //  Wait for key commands that we can handle but a viewmodel can't.
             ViewModel.OpenAssemblyLocationCommand.Executed += new Apex.MVVM.CommandEventHandler(OpenAssemblyLocationCommand_Executed);
+            ViewModel.InstallAssemblyCommand.Executed += new Apex.MVVM.CommandEventHandler(InstallAssemblyCommand_Executed);
+            ViewModel.UninstallAssemblyCommand.Executed += new Apex.MVVM.CommandEventHandler(UninstallAssemblyCommand_Executed);
+        }
+
+        void UninstallAssemblyCommand_Executed(object sender, Apex.MVVM.CommandEventArgs args)
+        {
+            //  The parameter must be an assembly.
+            var assemblyViewModel = (GACAssemblyViewModel)args.Parameter;
+
+            //  Create an assembly cache.
+            IASSEMBLYCACHE_UNINSTALL_DISPOSITION disposition = IASSEMBLYCACHE_UNINSTALL_DISPOSITION.Unknown;
+            AssemblyCache.UninstallAssembly(assemblyViewModel.InternalAssemblyDetails.QualifiedAssemblyName,
+                assemblyViewModel.InternalAssemblyDetails.InstallReferences.FirstOrDefault(), out disposition);
+
+            //  Depending on the result, show the appropriate message.
+            string message = string.Empty;
+            switch (disposition)
+            {
+                case IASSEMBLYCACHE_UNINSTALL_DISPOSITION.Unknown:
+                    message = "Failed to uninstall assembly.";
+                    break;
+                case IASSEMBLYCACHE_UNINSTALL_DISPOSITION.IASSEMBLYCACHE_UNINSTALL_DISPOSITION_UNINSTALLED:
+                    message = "The assembly was uninstalled successfully!";
+                    break;
+                case IASSEMBLYCACHE_UNINSTALL_DISPOSITION.IASSEMBLYCACHE_UNINSTALL_DISPOSITION_STILL_IN_USE:
+                    message = "Cannot uninstall this assembly - it is in use.";
+                    break;
+                case IASSEMBLYCACHE_UNINSTALL_DISPOSITION.IASSEMBLYCACHE_UNINSTALL_DISPOSITION_ALREADY_UNINSTALLED:
+                    message = "Cannot uninstall this assembly - it has already been uninstalled.";
+                    break;
+                case IASSEMBLYCACHE_UNINSTALL_DISPOSITION.IASSEMBLYCACHE_UNINSTALL_DISPOSITION_DELETE_PENDING:
+                    message = "Cannot uninstall this assembly - it has has a delete pending.";
+                    break;
+                case IASSEMBLYCACHE_UNINSTALL_DISPOSITION.IASSEMBLYCACHE_UNINSTALL_DISPOSITION_HAS_INSTALL_REFERENCES:
+                    message = "Cannot uninstall this assembly - it was installed as part of another product.";
+                    break;
+                case IASSEMBLYCACHE_UNINSTALL_DISPOSITION.IASSEMBLYCACHE_UNINSTALL_DISPOSITION_REFERENCE_NOT_FOUND:
+                    message = "Cannot uninstall this assembly - cannot find the assembly.";
+                    break;
+                default:
+                    break;
+            }
+
+            //  Show the message box.
+            MessageBox.Show(message, "Uninstall");
+        }
+
+        void InstallAssemblyCommand_Executed(object sender, Apex.MVVM.CommandEventArgs args)
+        {
+            //  Create an open file dialog.
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Assemblies (*.dll)|*.dll";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                //  Get the assembly path.
+                var assemblyPath = openFileDialog.FileName;
+
+                //  Install the assembly.
+                try
+                {
+                    AssemblyCache.InstallAssembly(assemblyPath, null, GACManagerApi.Fusion.AssemblyCommitFlags.Force);
+                }
+                catch (AssemblyMustBeStronglyNamedException)
+                {
+                    MessageBox.Show("Failed to install the assembly - it is not strongly named.", "Install");
+                }
+                catch
+                {
+                    MessageBox.Show("Failed to install the assembly.", "Install");
+                }
+            }
         }
 
         /// <summary>

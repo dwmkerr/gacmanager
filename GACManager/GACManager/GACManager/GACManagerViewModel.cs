@@ -23,9 +23,12 @@ namespace GACManager
         {
             //  Create the refresh assemblies command.
             RefreshAssembliesCommand = new AsynchronousCommand(DoRefreshAssembliesCommand, true);
-            UninstallAssemblyCommand = new Command(DoUninstallAssemblyCommand, false);
+            UninstallAssemblyCommand = new Command(() => { }, false);
             OpenAssemblyLocationCommand = new Command(() => {}, false);
             InstallAssemblyCommand = new Command(() => {});
+
+            GacUtilStatusInfo = GacUtil.CanFindExecutable() ? "GacUtil is installed, full functionality is supported." :
+                "Cannot find GacUtil - some features will be disabled.";
 
         }
 
@@ -115,6 +118,22 @@ namespace GACManager
 
         
         /// <summary>
+        /// The NotifyingProperty for the GacUtilStatusInfo property.
+        /// </summary>
+        private readonly NotifyingProperty GacUtilStatusInfoProperty =
+          new NotifyingProperty("GacUtilStatusInfo", typeof(string), default(string));
+
+        /// <summary>
+        /// Gets or sets GacUtilStatusInfo.
+        /// </summary>
+        /// <value>The value of GacUtilStatusInfo.</value>
+        public string GacUtilStatusInfo
+        {
+            get { return (string)GetValue(GacUtilStatusInfoProperty); }
+            set { SetValue(GacUtilStatusInfoProperty, value); }
+        }
+
+        /// <summary>
         /// The NotifyingProperty for the SelectedAssembly property.
         /// </summary>
         private readonly NotifyingProperty SelectedAssemblyProperty =
@@ -184,23 +203,6 @@ namespace GACManager
                 if(AssembliesCollectionView != null)
                     AssembliesCollectionView.Refresh();
             }
-        }
-
-        
-
-        /// <summary>
-        /// Performs the UninstallAssembly command.
-        /// </summary>
-        /// <param name="parameter">The UninstallAssembly command parameter.</param>
-        private void DoUninstallAssemblyCommand(object parameter)
-        {
-            //  The parameter must be an assembly.
-            var assemblyViewModel = (GACAssemblyViewModel)parameter;
-
-            //  Create an assembly cache.
-            IASSEMBLYCACHE_UNINSTALL_DISPOSITION disposition = IASSEMBLYCACHE_UNINSTALL_DISPOSITION.Unknown;
-            AssemblyCache.UninstallAssembly(assemblyViewModel.InternalAssemblyDetails.QualifiedAssemblyName,
-                assemblyViewModel.InternalAssemblyDetails.InstallReferences.FirstOrDefault(), out disposition);
         }
 
         /// <summary>
