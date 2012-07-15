@@ -64,8 +64,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Resources\Converters\WindowStateToBorderThicknessConverter.cs" />
-    <Compile Include="Resources\Converters\WindowStateToButtonVisibilityConverter.cs" />
     <Page Include="AssemblyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -99,18 +97,6 @@
     <Page Include="Popups\LoadingAssembliesPopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\ResourceDictionaries\ZuneListBoxResourceDictionary.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\ResourceDictionaries\ZuneResourceDictionary.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\ResourceDictionaries\ZuneScrollBarResourceDictionary.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -158,21 +144,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Refresh.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\Close.png" />
-    <Resource Include="Resources\Images\CloseOver.png" />
-    <Resource Include="Resources\Images\Maximize.png" />
-    <Resource Include="Resources\Images\MaximizeOver.png" />
-    <Resource Include="Resources\Images\Minimize.png" />
-    <Resource Include="Resources\Images\MinimizeOver.png" />
-    <Resource Include="Resources\Images\ModelAttribute.png" />
-    <Resource Include="Resources\Images\Restore.png" />
-    <Resource Include="Resources\Images\RestoreOver.png" />
-    <Resource Include="Resources\Images\ShowPopop.png" />
-    <Resource Include="Resources\Images\UsingTheModel.png" />
-    <Resource Include="Resources\Images\View.png" />
-    <Resource Include="Resources\Images\ViewModel.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

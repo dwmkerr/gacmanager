@@ -9,8 +9,7 @@
              xmlns:apexConverters="clr-namespace:Apex.Converters;assembly=Apex"
              xmlns:apexControls="clr-namespace:Apex.Controls;assembly=Apex"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
-             x:Name="gacManagerView">
+             d:DesignHeight="300" d:DesignWidth="300">
     
     <UserControl.Resources>
         <apexConverters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -62,10 +61,6 @@
                                 <apexBehaviours:ListViewItemContextMenuBehaviour.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Copy Display Name (e.g. for gacutil)" Command="{Binding CopyDisplayNameCommand}" />
-                                        <MenuItem Header="Open Folder" Command="{Binding DataContext.OpenAssemblyLocationCommand, 
-                                            ElementName=gacManagerView}" CommandParameter="{Binding}" />
-                                        <MenuItem Header="Uninstall" Command="{Binding DataContext.UninstallAssemblyCommand, 
-                                            ElementName=gacManagerView}" CommandParameter="{Binding}" />
                                         <MenuItem Header="File Properties" Command="{Binding ShowFilePropertiesCommand}" />
                                     </ContextMenu>
                                 </apexBehaviours:ListViewItemContextMenuBehaviour.ContextMenu>
