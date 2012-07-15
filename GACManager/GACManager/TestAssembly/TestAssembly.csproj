@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2909743E-72FF-48BF-A081-E61A73D2E6EC}</ProjectGuid>
+    <ProjectGuid>{70407D41-98DD-4D2D-A67E-1FD4D4A30441}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GACManagerApi</RootNamespace>
-    <AssemblyName>GACManagerApi</AssemblyName>
+    <RootNamespace>TestAssembly</RootNamespace>
+    <AssemblyName>TestAssembly</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -34,6 +34,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>TestAssemblyKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -44,27 +50,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyCache.cs" />
-    <Compile Include="AssemblyCacheEnumerator.cs" />
-    <Compile Include="AssemblyDetails.cs" />
-    <Compile Include="Fusion\ASM_DISPLAY_FLAGS.cs" />
-    <Compile Include="Fusion\ASM_NAME.cs" />
-    <Compile Include="Fusion\ASM_CACHE_FLAGS.cs" />
-    <Compile Include="Fusion\ASSEMBLY_INFO.cs" />
-    <Compile Include="Fusion\CREATE_ASM_NAME_OBJ_FLAGS.cs" />
-    <Compile Include="Fusion\FusionImports.cs" />
-    <Compile Include="Fusion\FUSION_INSTALL_REFERENCE.cs" />
-    <Compile Include="Fusion\IASSEMBLYCACHE_UNINSTALL_DISPOSITION.cs" />
-    <Compile Include="Fusion\IInstallReferenceEnum.cs" />
-    <Compile Include="Fusion\IInstallReferenceItem.cs" />
-    <Compile Include="Fusion\Todo.cs" />
-    <Compile Include="Fusion\IAssemblyEnum.cs" />
-    <Compile Include="Fusion\IAssemblyCache.cs" />
-    <Compile Include="Fusion\IAssemblyName.cs" />
-    <Compile Include="GacUtil.cs" />
-    <Compile Include="InstallReferenceEnumerator.cs" />
-    <Compile Include="InstallReferenceGuid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestAssemblyKey.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

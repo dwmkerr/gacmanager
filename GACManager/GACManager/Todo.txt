@@ -12,9 +12,13 @@ Use Apex SearchTextBox
 
 Enable Export
 
-Open assembly file properties command
+Open assembly file properties command.
 
-Sort out the image blurring on the toolbar buttons
+Sort out the image blurring on the toolbar buttons.
+
+Update UI immediately when assembly is installed.
+
+Update UI immediately when assembly is uninstalled.
 
 Done
 * Open assembly location command
