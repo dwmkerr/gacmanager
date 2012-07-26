@@ -8,8 +8,6 @@ Enable Install
 
 Enable Uninstall
 
-Use Apex SearchTextBox
-
 Enable Export
 
 Open assembly file properties command.
@@ -24,3 +22,5 @@ Done
 * Open assembly location command
 
 * Create popup for assembly details
+
+* Use Apex SearchTextBox
