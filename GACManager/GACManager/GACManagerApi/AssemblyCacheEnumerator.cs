@@ -52,7 +52,7 @@ namespace GACManagerApi
         /// Gets the next assembly.
         /// </summary>
         /// <returns>The next assembly, or null of all assemblies have been enumerated.</returns>
-        public AssemblyDetails GetNextAssembly()
+        public IAssemblyName GetNextAssembly()
         {
             int hr = 0;
             IAssemblyName fusionName = null;
@@ -77,11 +77,7 @@ namespace GACManagerApi
                 return null;
             }
 
-            //  Create the assembly details.
-            var assemblyDetails = new AssemblyDetails();
-            assemblyDetails.Initialise(fusionName);
-
-            return assemblyDetails;
+            return fusionName;
         }
 
         private IAssemblyEnum assemblyEnumerator = null;

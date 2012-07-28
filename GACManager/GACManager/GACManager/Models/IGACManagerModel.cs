@@ -8,7 +8,11 @@ namespace GACManager.Models
     /// </summary>
     public interface IGACManagerModel
     {
-        //  Add functions to the model here.
-        TimeSpan EnumerateAssemblies(Action<AssemblyDetails> onAssemblyEnumerated);
+        /// <summary>
+        /// Enumerates assemblies from the global assembly cache.
+        /// </summary>
+        /// <param name="onAssemblyEnumerated">Action to call when each assembly is enumerated.</param>
+        /// <returns>The time taken to enumerate all assemblies.</returns>
+        TimeSpan EnumerateAssemblies(Action<AssemblyDescription> onAssemblyEnumerated);
     }
 }

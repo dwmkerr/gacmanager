@@ -20,11 +20,11 @@ namespace GACManagerApi
         {
             return GetGacUtilPath() != null;
         }
-
+        
         /// <summary>
         /// Gets the gac util path.
         /// </summary>
-        private static string GetGacUtilPath()
+        public static string GetGacUtilPath()
         {
             //  Define all search paths here.
             var searchPaths = new[]
@@ -39,13 +39,16 @@ namespace GACManagerApi
                 @"%PROGRAMFILES(X86)%\Microsoft SDKs\Windows\v8.0A\bin\NETFX 4.0 Tools\gacutil.exe",
             };
 
-            //  Go through every search path until we find the gacutil file.
-            foreach (var searchPath in searchPaths)
-                if (System.IO.File.Exists(searchPath))
-                    return searchPath;
+            //  Expand the environment variables.
+            var paths = searchPaths.Select(Environment.ExpandEnvironmentVariables);
 
-            //  We can't find the path.
-            return null;
+            //  Go through every search path until we find the gacutil file.
+            return paths.FirstOrDefault(System.IO.File.Exists);
+        }
+
+        public static void ListAssemblies(string search)
+        {
+            
         }
     }
 }

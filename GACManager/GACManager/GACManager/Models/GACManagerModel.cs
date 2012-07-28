@@ -23,7 +23,14 @@ namespace GACManager.Models
             //  TODO: Initialise the model.
         }
 
-        public TimeSpan EnumerateAssemblies(Action<AssemblyDetails> onAssemblyEnumerated)
+        /// <summary>
+        /// Enumerates assemblies from the global assembly cache.
+        /// </summary>
+        /// <param name="onAssemblyEnumerated">Action to call when each assembly is enumerated.</param>
+        /// <returns>
+        /// The time taken to enumerate all assemblies.
+        /// </returns>
+        public TimeSpan EnumerateAssemblies(Action<AssemblyDescription> onAssemblyEnumerated)
         {
             //  Start a stopwatch.
             var stopwatch = new Stopwatch();
@@ -36,8 +43,11 @@ namespace GACManager.Models
             var assemblyName = assemblyCacheEnum.GetNextAssembly();
             while(assemblyName != null)
             {
+                //  Create the assembly description.
+                var desc = new AssemblyDescription(assemblyName);
+
                 //  Create an assembly view model.
-                onAssemblyEnumerated(assemblyName);
+                onAssemblyEnumerated(desc);
                 assemblyName = assemblyCacheEnum.GetNextAssembly();
             }
 

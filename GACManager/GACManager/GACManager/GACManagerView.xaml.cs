@@ -46,8 +46,8 @@ namespace GACManager
 
             //  Create an assembly cache.
             IASSEMBLYCACHE_UNINSTALL_DISPOSITION disposition = IASSEMBLYCACHE_UNINSTALL_DISPOSITION.Unknown;
-            AssemblyCache.UninstallAssembly(assemblyViewModel.InternalAssemblyDetails.QualifiedAssemblyName,
-                assemblyViewModel.InternalAssemblyDetails.InstallReferences.FirstOrDefault(), out disposition);
+            AssemblyCache.UninstallAssembly(assemblyViewModel.InternalAssemblyDescription.DisplayName,
+                null, out disposition);
 
             //  Depending on the result, show the appropriate message.
             string message = string.Empty;
@@ -131,7 +131,7 @@ namespace GACManager
 
         public GACManagerViewModel ViewModel
         {
-            get { return DataContext as GACManagerViewModel; }
+            get { return (GACManagerViewModel) this.FindResource("MainViewModel"); }
         }
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)

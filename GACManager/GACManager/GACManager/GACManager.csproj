@@ -39,6 +39,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>GACManager.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Apex, Version=1.4.0.0, Culture=neutral, PublicKeyToken=98d06957926c086d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -147,6 +150,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\OpenFolder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GACManager.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Properties.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Copy.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

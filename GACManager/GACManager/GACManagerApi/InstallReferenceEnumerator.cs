@@ -30,6 +30,17 @@ namespace GACManagerApi
             }
         }
 
+        public InstallReferenceEnumerator(IAssemblyName assemblyName)
+        {
+
+            var hr = FusionImports.CreateInstallReferenceEnum(out refEnum, assemblyName, 0, IntPtr.Zero);
+
+            if (hr < 0)
+            {
+                Marshal.ThrowExceptionForHR(hr);
+            }
+        }
+
         public FUSION_INSTALL_REFERENCE GetNextReference()
         {
             IInstallReferenceItem item = null;
