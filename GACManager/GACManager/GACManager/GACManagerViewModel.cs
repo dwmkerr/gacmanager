@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Data;
 using Apex;
 using Apex.MVVM;
@@ -23,12 +24,15 @@ namespace GACManager
         {
             //  Create the refresh assemblies command.
             RefreshAssembliesCommand = new AsynchronousCommand(DoRefreshAssembliesCommand, true);
+            CopyDisplayNameCommand = new Command(DoCopyDisplayNameCommand, false);
+            ShowFilePropertiesCommand = new Command(DoShowFilePropertiesCommand, false);
             UninstallAssemblyCommand = new Command(() => { }, false);
             OpenAssemblyLocationCommand = new Command(() => {}, false);
             InstallAssemblyCommand = new Command(() => {});
 
-            GacUtilStatusInfo = GacUtil.CanFindExecutable() ? "GacUtil is installed, full functionality is supported." :
-                "Cannot find GacUtil - some features will be disabled.";
+            //  Update Gac Util Status info.
+            GacUtilStatusInfo = GacUtil.CanFindExecutable() ? "GacUtil is installed" :
+                "Cannot find GacUtil";
 
         }
 
@@ -38,11 +42,15 @@ namespace GACManager
         /// <param name="parameter">The RefreshAssemblies command parameter.</param>
         private void DoRefreshAssembliesCommand(object parameter)
         {
+            //  Clear the assemblies.
             Assemblies.Clear();
 
             //  Set the status text.
             RefreshAssembliesCommand.ReportProgress(
-                () => { StatusInfo = "Loading Assemblies..."; });
+                () =>
+                    {
+                        StatusInfo = "Loading Assemblies...";
+                    });
             
             //  Start the enumeration.
             var timeTaken = ApexBroker.GetModel<IGACManagerModel>().EnumerateAssemblies(
@@ -63,7 +71,7 @@ namespace GACManager
                     {
             AssembliesCollectionView = new ListCollectionView(Assemblies.ToList());
 
-            AssembliesCollectionView.SortDescriptions.Add(new SortDescription("FullName", ListSortDirection.Ascending));
+            AssembliesCollectionView.SortDescriptions.Add(new SortDescription("DisplayName", ListSortDirection.Ascending));
                         AssembliesCollectionView.Filter += Filter;
                         StatusInfo = "Loaded " + Assemblies.Count + " assemblies in " + timeTaken.TotalMilliseconds +
                                      " milliseconds";
@@ -151,6 +159,8 @@ namespace GACManager
                 SetValue(SelectedAssemblyProperty, value);
                 UninstallAssemblyCommand.CanExecute = value != null;
                 OpenAssemblyLocationCommand.CanExecute = value != null;
+                ShowFilePropertiesCommand.CanExecute = value != null;
+                CopyDisplayNameCommand.CanExecute = value != null;
                 if(SelectedAssembly != null)
                     SelectedAssembly.LoadExtendedPropertiesCommand.DoExecute(null);
             }
@@ -228,6 +238,46 @@ namespace GACManager
         /// <summary>
         /// Gets the open assembly location command.
         /// </summary>
-        public Command OpenAssemblyLocationCommand { get; private set; }
+        public Command OpenAssemblyLocationCommand { get; private set; }/// <summary>
+        /// Performs the CopyDisplayName command.
+        /// </summary>
+        /// <param name="parameter">The CopyDisplayName command parameter.</param>
+        private void DoCopyDisplayNameCommand(object parameter)
+        {
+            var assembly = (GACAssemblyViewModel)parameter;
+            Clipboard.SetText(assembly.InternalAssemblyDescription.DisplayName);
+        }
+
+        /// <summary>
+        /// Gets the CopyDisplayName command.
+        /// </summary>
+        /// <value>The value of .</value>
+        public Command CopyDisplayNameCommand
+        {
+            get;
+            private set;
+        }
+
+
+
+        /// <summary>
+        /// Performs the ShowFileProperties command.
+        /// </summary>
+        /// <param name="parameter">The ShowFileProperties command parameter.</param>
+        private void DoShowFilePropertiesCommand(object parameter)
+        {
+            var assembly = (GACAssemblyViewModel) parameter;
+            Interop.Shell.Shell32.ShowFileProperties(assembly.InternalAssemblyDescription.Path);
+        }
+
+        /// <summary>
+        /// Gets the ShowFileProperties command.
+        /// </summary>
+        /// <value>The value of .</value>
+        public Command ShowFilePropertiesCommand
+        {
+            get;
+            private set;
+        }
     }
 }

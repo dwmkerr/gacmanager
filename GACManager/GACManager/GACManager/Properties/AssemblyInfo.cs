@@ -8,11 +8,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("GACManager")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Utility to manage the Global Assembly Cache")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Dave Kerr")]
 [assembly: AssemblyProduct("GACManager")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
+[assembly: AssemblyCopyright("Copyright ©  2012 Dave Kerr")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

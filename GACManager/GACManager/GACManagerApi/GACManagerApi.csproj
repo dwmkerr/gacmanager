@@ -46,7 +46,9 @@
   <ItemGroup>
     <Compile Include="AssemblyCache.cs" />
     <Compile Include="AssemblyCacheEnumerator.cs" />
-    <Compile Include="AssemblyDetails.cs" />
+    <Compile Include="AssemblyDescription.cs" />
+    <Compile Include="AssemblyFusionProperties.cs" />
+    <Compile Include="AssemblyReflectionProperties.cs" />
     <Compile Include="Fusion\ASM_DISPLAY_FLAGS.cs" />
     <Compile Include="Fusion\ASM_NAME.cs" />
     <Compile Include="Fusion\ASM_CACHE_FLAGS.cs" />
@@ -57,7 +59,7 @@
     <Compile Include="Fusion\IASSEMBLYCACHE_UNINSTALL_DISPOSITION.cs" />
     <Compile Include="Fusion\IInstallReferenceEnum.cs" />
     <Compile Include="Fusion\IInstallReferenceItem.cs" />
-    <Compile Include="Fusion\Todo.cs" />
+    <Compile Include="Fusion\AssemblyCommitFlags.cs" />
     <Compile Include="Fusion\IAssemblyEnum.cs" />
     <Compile Include="Fusion\IAssemblyCache.cs" />
     <Compile Include="Fusion\IAssemblyName.cs" />

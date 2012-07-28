@@ -13,30 +13,25 @@ using System.Windows;
 namespace GACManager
 {
     [ViewModel]
-    public class GACAssemblyViewModel : ViewModel<AssemblyDetails>
+    public class GACAssemblyViewModel : ViewModel<AssemblyDescription>
     {
-        public override void FromModel(AssemblyDetails model)
+        public override void FromModel(AssemblyDescription model)
         {
-            InternalAssemblyDetails = model;
+            InternalAssemblyDescription = model;
 
             DisplayName = model.Name;
-            FullName = model.FullName;
             Path = model.Path;
-            Version = model.MajorVersion + "." + model.MinorVersion + "." +
-                                model.BuildNumber + "." + model.RevisionNumber;
+            Version = model.Version;
             Custom = model.Custom;
             ProcessorArchitecture = model.ProcessorArchitecture;
             Culture = model.Culture;
-            RuntimeVersion = model.RuntimeVersion;
             if(model.PublicKeyToken != null)
                 PublicKeyToken = BitConverter.ToString(model.PublicKeyToken).Replace("-", string.Empty);
 
             LoadExtendedPropertiesCommand = new AsynchronousCommand(DoLoadExtendedPropertiesCommand);
-            CopyDisplayNameCommand = new Command(DoCopyDisplayNameCommand);
-            ShowFilePropertiesCommand = new Command(DoShowFilePropertiesCommand);
         }
 
-        public override void ToModel(AssemblyDetails model)
+        public override void ToModel(AssemblyDescription model)
         {
             throw new NotImplementedException();
         }
@@ -44,7 +39,7 @@ namespace GACManager
         /// <summary>
         /// Gets the internal assembly details, which is wht we're displaying data for.
         /// </summary>
-        public AssemblyDetails InternalAssemblyDetails { get; private set; }
+        public AssemblyDescription InternalAssemblyDescription { get; private set; }
 
         /// <summary>
         /// The NotifyingProperty for the FullName property.
@@ -239,17 +234,18 @@ namespace GACManager
         /// <param name="parameter">The LoadExtendedProperties command parameter.</param>
         private void DoLoadExtendedPropertiesCommand(object parameter)
         {
-            InternalAssemblyDetails.LoadExtendedProperties();
+            var fps = InternalAssemblyDescription.FusionProperties;
+            var rps = InternalAssemblyDescription.ReflectionProperties;
 
             //  Set the extended properties.
             LoadExtendedPropertiesCommand.ReportProgress(
                 ()
                 =>
                 {
-                    RuntimeVersion = InternalAssemblyDetails.RuntimeVersion;
+                    RuntimeVersion = rps.RuntimeVersion;
 
                     InstallReferences.Clear();
-                    foreach (var installReference in InternalAssemblyDetails.InstallReferences)
+                    foreach (var installReference in InternalAssemblyDescription.FusionProperties.InstallReferences)
                         InstallReferences.Add(new InstallReferenceViewModel()
                                                   {
                                                       Identifier = installReference.Identifier,
@@ -286,44 +282,6 @@ namespace GACManager
 
 
 
-        /// <summary>
-        /// Performs the CopyDisplayName command.
-        /// </summary>
-        /// <param name="parameter">The CopyDisplayName command parameter.</param>
-        private void DoCopyDisplayNameCommand(object parameter)
-        {
-            Clipboard.SetText(InternalAssemblyDetails.DisplayName);
-        }
-
-        /// <summary>
-        /// Gets the CopyDisplayName command.
-        /// </summary>
-        /// <value>The value of .</value>
-        public Command CopyDisplayNameCommand
-        {
-            get;
-            private set;
-        }
-
-
-
-        /// <summary>
-        /// Performs the ShowFileProperties command.
-        /// </summary>
-        /// <param name="parameter">The ShowFileProperties command parameter.</param>
-        private void DoShowFilePropertiesCommand(object parameter)
-        {
-            Interop.Shell.Shell32.ShowFileProperties(InternalAssemblyDetails.Path);
-        }
-
-        /// <summary>
-        /// Gets the ShowFileProperties command.
-        /// </summary>
-        /// <value>The value of .</value>
-        public Command ShowFilePropertiesCommand
-        {
-            get;
-            private set;
-        }
+        
     }
 }

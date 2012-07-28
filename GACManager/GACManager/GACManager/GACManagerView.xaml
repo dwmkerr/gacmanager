@@ -9,34 +9,103 @@
              xmlns:apexConverters="clr-namespace:Apex.Converters;assembly=Apex"
              xmlns:apexControls="clr-namespace:Apex.Controls;assembly=Apex"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="400" d:DesignWidth="600">
     
     <UserControl.Resources>
         <apexConverters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <GACManager:GACManagerViewModel x:Key="MainViewModel" />
+
+        <!-- Key image sources - only loaded once. -->
+        <BitmapImage x:Key="ImageSourceRefresh" UriSource="/GACManager;component/Images/Refresh.png" />
+        <BitmapImage x:Key="ImageSourceInstallAssembly" UriSource="/GACManager;component/Images/InstallAssembly.png" />
+        <BitmapImage x:Key="ImageSourceCopy" UriSource="/GACManager;component/Images/Copy.png" />
+        <BitmapImage x:Key="ImageSourceProperties" UriSource="/GACManager;component/Images/Properties.png" />
+        <BitmapImage x:Key="ImageSourceUninstallAssembly" UriSource="/GACManager;component/Images/UninstallAssembly.png" />
+        <BitmapImage x:Key="ImageSourceOpenFolder" UriSource="/GACManager;component/Images/OpenFolder.png" />
+        
+        <!-- A style for small icons. -->
+        <Style x:Key="StyleIcon" TargetType="{x:Type Image}">
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Stretch" Value="Uniform" />
+            <Setter Property="RenderOptions.BitmapScalingMode" Value="NearestNeighbor" />
+
+            <!-- Set the style triggers. -->
+            <Style.Triggers>
+                
+                <!-- Fake a gray out of images in disabled toolbar buttons. -->
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type UIElement},
+                    AncestorLevel=1}, Path=IsEnabled}" Value="False">
+                    <Setter Property="Opacity" Value="0.3"></Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
     </UserControl.Resources>
-    <UserControl.DataContext>
-        <GACManager:GACManagerViewModel />
-    </UserControl.DataContext>
-    <Grid>
+    
+    <Grid DataContext="{StaticResource MainViewModel}">
         <DockPanel>
             
-            <!-- The top of the dock panel is a toolbar. -->
-            <ToolBar DockPanel.Dock="Top">
-                <Button Command="{Binding RefreshAssembliesCommand}" ToolTip="Refresh the list of Assemblies" >
-                    <Image Source="/GACManager;component/Images/Refresh.png" Width="16" Stretch="None" RenderOptions.BitmapScalingMode="Linear" />
-                </Button>
-                <Button Command="{Binding UninstallAssemblyCommand}" CommandParameter="{Binding SelectedAssembly}"
-                        ToolTip="Uninstall the selected assembly">
-                    <Image Source="/GACManager;component/Images/UninstallAssembly.png" Width="16" Stretch="None" RenderOptions.BitmapScalingMode="Linear" />
-                </Button>
-                <Button Command="{Binding InstallAssemblyCommand}"
-                        ToolTip="Install a new assembly">
-                    <Image Source="/GACManager;component/Images/InstallAssembly.png" Width="16" Stretch="None" RenderOptions.BitmapScalingMode="Linear" />
-                </Button>
-                <Button Command="{Binding OpenAssemblyLocationCommand}" Content="Open Folder"
-                        CommandParameter="{Binding SelectedAssembly}"/>
-                <apexControls:SearchTextBox CueText="Search" Width="120" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
-            </ToolBar>
+            <!-- The top of the dock panel will hold a toolbar and a search box. -->
+            <apexControls:ApexGrid DockPanel.Dock="Top" Columns="Auto,*,Auto" SnapsToDevicePixels="True" UseLayoutRounding="False">
+
+                <!-- The top of the dock panel is a toolbar. -->
+                <ToolBar Grid.Column="0" ToolBarTray.IsLocked="True">
+                    
+                    <!-- The first set of buttons will be for commands that are always available. -->
+                    <Button 
+                        ToolTip="Refresh the list of Assemblies"
+                        Command="{Binding RefreshAssembliesCommand}">
+                        <Image Source="{StaticResource ImageSourceRefresh}" Style="{StaticResource StyleIcon}" />
+                    </Button>
+
+                    <Button 
+                        ToolTip="Install a new assembly"
+                        Command="{Binding InstallAssemblyCommand}">
+                        <Image Source="{StaticResource ImageSourceInstallAssembly}" Style="{StaticResource StyleIcon}" />
+                    </Button>
+                    
+                    <Separator />
+                    
+                    <!-- The next set of commands are assembly specific.-->
+                    <Button 
+                        ToolTip="Copy Display Name (e.g. for gacutil)" 
+                        Command="{Binding CopyDisplayNameCommand}"
+                        CommandParameter="{Binding SelectedAssembly}">
+                        <Image Source="{StaticResource ImageSourceCopy}" Style="{StaticResource StyleIcon}" />
+                    </Button>
+                    
+                    <Button 
+                        ToolTip="File Properties" 
+                        Command="{Binding ShowFilePropertiesCommand}"
+                        CommandParameter="{Binding SelectedAssembly}">
+                        <Image Source="{StaticResource ImageSourceProperties}" Style="{StaticResource StyleIcon}" />
+                    </Button>
+
+                    <Button 
+                        ToolTip="Uninstall the selected assembly"
+                        Command="{Binding UninstallAssemblyCommand}"
+                        CommandParameter="{Binding SelectedAssembly}">
+                        <Image Source="{StaticResource ImageSourceUninstallAssembly}" Style="{StaticResource StyleIcon}" />
+                    </Button>
+                    
+                    <Button 
+                        ToolTip="Open assembly location"
+                        Command="{Binding OpenAssemblyLocationCommand}"
+                        CommandParameter="{Binding SelectedAssembly}">
+                        <Image Source="{StaticResource ImageSourceOpenFolder}" Style="{StaticResource StyleIcon}" />
+                    </Button>
+                    
+                </ToolBar>
+
+                <!-- The main search box. -->
+                <apexControls:SearchTextBox
+                    Grid.Column="2" CueText="Search" Width="200" Margin="4"
+                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+
+            </apexControls:ApexGrid>
+            
+            
             
             <!-- The bottom of the dock panel is a status bar. -->
             <StatusBar DockPanel.Dock="Bottom">
@@ -57,11 +126,41 @@
                               MouseDoubleClick="ListView_MouseDoubleClick">
 
                         <i:Interaction.Behaviors>
-                            <apexBehaviours:ListViewItemContextMenuBehaviour>
+                            <apexBehaviours:ListViewItemContextMenuBehaviour x:Name="parent">
                                 <apexBehaviours:ListViewItemContextMenuBehaviour.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="Copy Display Name (e.g. for gacutil)" Command="{Binding CopyDisplayNameCommand}" />
-                                        <MenuItem Header="File Properties" Command="{Binding ShowFilePropertiesCommand}" />
+                                        <MenuItem 
+                                            Header="Copy Display Name (e.g. for gacutil)" 
+                                            Command="{Binding CopyDisplayNameCommand, Source={StaticResource MainViewModel}}"
+                                            CommandParameter="{Binding}">
+                                            <MenuItem.Icon>
+                                                <Image Source="{StaticResource ImageSourceCopy}" Style="{StaticResource StyleIcon}" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem 
+                                            Header="Uninstall"
+                                            Command="{Binding UninstallAssemblyCommand, Source={StaticResource MainViewModel}}" 
+                                            CommandParameter="{Binding}">
+                                            <MenuItem.Icon>
+                                                <Image Source="{StaticResource ImageSourceUninstallAssembly}" Style="{StaticResource StyleIcon}" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem 
+                                            Header="File Properties" 
+                                            Command="{Binding ShowFilePropertiesCommand, Source={StaticResource MainViewModel}}"
+                                            CommandParameter="{Binding}">
+                                            <MenuItem.Icon>
+                                                <Image Source="{StaticResource ImageSourceProperties}" Style="{StaticResource StyleIcon}" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem 
+                                            Header="Open Containing Folder" 
+                                            Command="{Binding OpenAssemblyLocationCommand, Source={StaticResource MainViewModel}}"
+                                            CommandParameter="{Binding}">
+                                            <MenuItem.Icon>
+                                                <Image Source="{StaticResource ImageSourceOpenFolder}" Style="{StaticResource StyleIcon}" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
                                     </ContextMenu>
                                 </apexBehaviours:ListViewItemContextMenuBehaviour.ContextMenu>
                             </apexBehaviours:ListViewItemContextMenuBehaviour>
