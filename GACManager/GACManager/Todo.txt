@@ -1,20 +1,14 @@
-Todo for 1.0
+Todo for future
 
 It would be very useful to be able to limit the display based on framework version.
 
-The loading screen should have some text and clear the items when loading.
-
-Enable Install
-
-Enable Uninstall
-
 Enable Export
+
+Todo for 1.0
 
 Update UI immediately when assembly is installed.
 
 Update UI immediately when assembly is uninstalled.
-
-Determine how advanced properties will be loaded.
 
 Done
 
@@ -41,3 +35,21 @@ Done
 
 * Split the assembly into basic properties, advanced GAC properties, and assembly properties.
   These are loaded from A- display name (basic), B- Fusion (advanced), C- File (version, resources, last modified etc).
+
+* Determine how advanced properties will be loaded.
+
+* Warning before uninstalling an assembly
+
+* Finalise the UI of the details view.
+
+* The loading screen should have some text and clear the items when loading.
+
+* Enable Install
+
+* Enable Uninstall
+
+* Add show details buttons to context menu and toolbar.
+
+* Add project home page buttons to the toolbar.
+
+* Add some fusion properties to the fusion details window.
