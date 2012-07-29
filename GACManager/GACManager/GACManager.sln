@@ -17,9 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAssembly", "TestAssembly\TestAssembly.csproj", "{70407D41-98DD-4D2D-A67E-1FD4D4A30441}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GACManagerSetup", "GACManagerSetup\GACManagerSetup.vdproj", "{396E3758-0E0A-4729-93B4-72AFDFB5DDE7}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
+		SccNumberOfProjects = 6
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs33
 		SccLocalPath0 = .
@@ -35,6 +37,9 @@ Global
 		SccProjectUniqueName4 = TestAssembly\\TestAssembly.csproj
 		SccProjectName4 = TestAssembly
 		SccLocalPath4 = TestAssembly
+		SccProjectUniqueName5 = GACManagerSetup\\GACManagerSetup.vdproj
+		SccProjectName5 = GACManagerSetup
+		SccLocalPath5 = GACManagerSetup
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = GACManager.vsmdi
@@ -88,6 +93,12 @@ Global
 		{70407D41-98DD-4D2D-A67E-1FD4D4A30441}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{70407D41-98DD-4D2D-A67E-1FD4D4A30441}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{70407D41-98DD-4D2D-A67E-1FD4D4A30441}.Release|x86.ActiveCfg = Release|Any CPU
+		{396E3758-0E0A-4729-93B4-72AFDFB5DDE7}.Debug|Any CPU.ActiveCfg = Debug
+		{396E3758-0E0A-4729-93B4-72AFDFB5DDE7}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{396E3758-0E0A-4729-93B4-72AFDFB5DDE7}.Debug|x86.ActiveCfg = Debug
+		{396E3758-0E0A-4729-93B4-72AFDFB5DDE7}.Release|Any CPU.ActiveCfg = Release
+		{396E3758-0E0A-4729-93B4-72AFDFB5DDE7}.Release|Mixed Platforms.ActiveCfg = Release
+		{396E3758-0E0A-4729-93B4-72AFDFB5DDE7}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

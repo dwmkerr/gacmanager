@@ -67,7 +67,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="AssemblyView.xaml">
+    <Page Include="AssemblyDetails\AssemblyDetailsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AssemblyDetails\AssemblyDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -83,8 +87,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AssemblyView.xaml.cs">
-      <DependentUpon>AssemblyView.xaml</DependentUpon>
+    <Compile Include="AssemblyDetails\AssemblyDetailsWindow.xaml.cs">
+      <DependentUpon>AssemblyDetailsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AssemblyDetails\AssemblyDetailsView.xaml.cs">
+      <DependentUpon>AssemblyDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="GACAssemblyViewModel.cs" />
     <Compile Include="GACManagerView.xaml.cs">
@@ -97,17 +104,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Popups\LoadingAssembliesPopup.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\GACManagerModel.cs" />
     <Compile Include="Models\IGACManagerModel.cs" />
-    <Compile Include="Popups\LoadingAssembliesPopup.xaml.cs">
-      <DependentUpon>LoadingAssembliesPopup.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -159,6 +159,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Details.png" />
+    <Resource Include="Images\Help.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

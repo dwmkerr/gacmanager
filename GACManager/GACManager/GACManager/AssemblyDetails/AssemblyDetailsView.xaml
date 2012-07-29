@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="GACManager.AssemblyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:apexControls="clr-namespace:Apex.Controls;assembly=Apex" xmlns:GACManager="clr-namespace:GACManager"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="400">
+    <UserControl.DataContext>
+        <GACManager:GACAssemblyViewModel />
+    </UserControl.DataContext>
+
+    <!-- Main tab control of details. -->
+    <TabControl>
+            
+        <!-- First page, basic properties. -->
+        <TabItem Header="Basic Properties">
+            
+            <apexControls:PaddedGrid
+                Rows="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" 
+                Columns="Auto,*" 
+                Padding="4"
+                Margin="4">
+
+                <Label Grid.Row="0" Grid.Column="0" Content="Name" />
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding DisplayName}" IsReadOnly="True" />
+
+                <Label Grid.Row="1" Grid.Column="0" Content="Version" />
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Version}" IsReadOnly="True" />
+
+                <!-- Runtime version currently disabled. 
+                <Label Grid.Row="2" Grid.Column="0" Content="Runtime Version" />
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RuntimeVersion}" IsReadOnly="True" />
+                -->
+                
+                <Label Grid.Row="3" Grid.Column="0" Content="Public Key Token" />
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding PublicKeyToken}" IsReadOnly="True" />
+
+                <Label Grid.Row="4" Grid.Column="0" Content="Culture" />
+                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Culture}" IsReadOnly="True" />
+
+                <Label Grid.Row="5" Grid.Column="0" Content="Processor Architecture" />
+                <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding ProcessorArchitecture}" IsReadOnly="True" />
+
+                <Label Grid.Row="6" Grid.Column="0" Content="Path" />
+                <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path}" IsReadOnly="True" />
+
+                <Label Grid.Row="7" Grid.Column="0" Content="Install References" />
+                <ItemsControl Grid.Row="7" Grid.Column="1" ItemsSource="{Binding InstallReferences}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBox IsReadOnly="True">
+                                <TextBox.Text>
+                                    <MultiBinding StringFormat="{}{0} - {1}">
+                                        <Binding Path="Description" />
+                                        <Binding Path="Identifier" />
+                                    </MultiBinding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+        </apexControls:PaddedGrid>
+
+        </TabItem>
+        
+        <!-- The advanced fusion properties grid. -->
+        <TabItem Header="Fusion Properties">
+
+            <apexControls:PaddedGrid
+                Rows="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" 
+                Columns="Auto,*" 
+                Padding="4"
+                Margin="4">
+
+                <Label Grid.Row="0" Grid.Column="0" Content="Hash (Reserved)" />
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ReservedHash}" IsReadOnly="True" />
+
+                <Label Grid.Row="1" Grid.Column="0" Content="Hash Algorithm ID (Reserved)" />
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ReservedHashAlgorithm}" IsReadOnly="True" />
+
+            </apexControls:PaddedGrid>
+
+
+        </TabItem>
+
+    </TabControl>
+
+</UserControl>

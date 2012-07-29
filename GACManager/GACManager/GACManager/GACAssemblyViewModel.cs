@@ -28,6 +28,10 @@ namespace GACManager
             if(model.PublicKeyToken != null)
                 PublicKeyToken = BitConverter.ToString(model.PublicKeyToken).Replace("-", string.Empty);
 
+            //  Load the reserved fusion properties.
+            //ReservedHash = BitConverter.ToString(model.FusionProperties.ReservedHashValue).Replace("-", string.Empty);
+            //ReservedHashAlgorithm = model.FusionProperties.ReservedHashAlgorithmId;
+
             LoadExtendedPropertiesCommand = new AsynchronousCommand(DoLoadExtendedPropertiesCommand);
         }
 
@@ -281,7 +285,39 @@ namespace GACManager
         }
 
 
+        
+        /// <summary>
+        /// The NotifyingProperty for the ReservedHash property.
+        /// </summary>
+        private readonly NotifyingProperty ReservedHashProperty =
+          new NotifyingProperty("ReservedHash", typeof(string), default(string));
 
+        /// <summary>
+        /// Gets or sets ReservedHash.
+        /// </summary>
+        /// <value>The value of ReservedHash.</value>
+        public string ReservedHash
+        {
+            get { return (string)GetValue(ReservedHashProperty); }
+            set { SetValue(ReservedHashProperty, value); }
+        }
+
+        
+        /// <summary>
+        /// The NotifyingProperty for the ReservedHashAlgorithm property.
+        /// </summary>
+        private readonly NotifyingProperty ReservedHashAlgorithmProperty =
+          new NotifyingProperty("ReservedHashAlgorithm", typeof(uint), default(uint));
+
+        /// <summary>
+        /// Gets or sets ReservedHashAlgorithm.
+        /// </summary>
+        /// <value>The value of ReservedHashAlgorithm.</value>
+        public uint ReservedHashAlgorithm
+        {
+            get { return (uint)GetValue(ReservedHashAlgorithmProperty); }
+            set { SetValue(ReservedHashAlgorithmProperty, value); }
+        }
         
     }
 }

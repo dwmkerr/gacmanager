@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Apex;
-using GACManager.Popups;
 using Microsoft.Win32;
 using GACManagerApi.Fusion;
 using GACManagerApi;
@@ -36,7 +25,40 @@ namespace GACManager
             //  Wait for key commands that we can handle but a viewmodel can't.
             ViewModel.OpenAssemblyLocationCommand.Executed += new Apex.MVVM.CommandEventHandler(OpenAssemblyLocationCommand_Executed);
             ViewModel.InstallAssemblyCommand.Executed += new Apex.MVVM.CommandEventHandler(InstallAssemblyCommand_Executed);
+            ViewModel.UninstallAssemblyCommand.Executing += new Apex.MVVM.CancelCommandEventHandler(UninstallAssemblyCommand_Executing);
             ViewModel.UninstallAssemblyCommand.Executed += new Apex.MVVM.CommandEventHandler(UninstallAssemblyCommand_Executed);
+            ViewModel.HelpCommand.Executed += new Apex.MVVM.CommandEventHandler(HelpCommand_Executed);
+            ViewModel.ShowAssemblyDetailsCommand.Executed += new Apex.MVVM.CommandEventHandler(ShowAssemblyDetailsCommand_Executed);
+        }
+
+        void ShowAssemblyDetailsCommand_Executed(object sender, Apex.MVVM.CommandEventArgs args)
+        {
+            //  Get the assembly view model.
+            var assemblyViewModel = args.Parameter as GACAssemblyViewModel;
+
+            //  If we don't have one, bail.
+            if (assemblyViewModel == null)
+                return;
+
+            //  Create a new assembly details window.
+            var assemblyDetailsWindow = new AssemblyDetails.AssemblyDetailsWindow();
+            assemblyDetailsWindow.AssemblyViewModel = assemblyViewModel;
+
+            //  Show the window.
+            assemblyDetailsWindow.ShowDialog();
+        }
+
+        void HelpCommand_Executed(object sender, Apex.MVVM.CommandEventArgs args)
+        {
+            System.Diagnostics.Process.Start(Properties.Resources.ProjectHomePageUrl);
+        }
+
+        void UninstallAssemblyCommand_Executing(object sender, Apex.MVVM.CancelCommandEventArgs args)
+        {
+            //  Double check with the user.
+            args.Cancel = MessageBox.Show("Are you sure you want to uninstall this assembly?", "Are you sure?",
+                                          MessageBoxButton.YesNoCancel)
+                          != MessageBoxResult.Yes;
         }
 
         void UninstallAssemblyCommand_Executed(object sender, Apex.MVVM.CommandEventArgs args)
@@ -78,6 +100,10 @@ namespace GACManager
                     break;
             }
 
+            //  Remove the assembly from the vm.
+            ViewModel.Assemblies.Remove(assemblyViewModel);
+            ViewModel.AssembliesCollectionView.Refresh();
+
             //  Show the message box.
             MessageBox.Show(message, "Uninstall");
         }
@@ -86,6 +112,7 @@ namespace GACManager
         {
             //  Create an open file dialog.
             var openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Select Assembly to Install";
             openFileDialog.Filter = "Assemblies (*.dll)|*.dll";
             if (openFileDialog.ShowDialog() == true)
             {
@@ -105,6 +132,17 @@ namespace GACManager
                 {
                     MessageBox.Show("Failed to install the assembly.", "Install");
                 }
+
+                //  Load the assembly.
+
+
+                //var enumerator =
+                //    new AssemblyCacheEnumerator(System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName));
+                //var assembly = enumerator.GetNextAssembly();
+                //var vm = new GACAssemblyViewModel();
+                //vm.FromModel(new AssemblyDescription(assembly));
+                //ViewModel.Assemblies.Add(vm);
+                //ViewModel.AssembliesCollectionView.
             }
         }
 
@@ -136,11 +174,7 @@ namespace GACManager
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var item = ((FrameworkElement)e.OriginalSource).DataContext as GACAssemblyViewModel;
-            if (item != null)
-            {
-                ApexBroker.GetShell().ShowPopup(new AssemblyView() {DataContext = item});
-            }
+            ViewModel.ShowAssemblyDetailsCommand.DoExecute(((FrameworkElement)e.OriginalSource).DataContext as GACAssemblyViewModel);
         }
     }
 }

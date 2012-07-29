@@ -29,6 +29,8 @@ namespace GACManager
             UninstallAssemblyCommand = new Command(() => { }, false);
             OpenAssemblyLocationCommand = new Command(() => {}, false);
             InstallAssemblyCommand = new Command(() => {});
+            HelpCommand = new Command(() => {});
+            ShowAssemblyDetailsCommand = new Command(DoShowAssemblyDetailsCommand, false);
 
             //  Update Gac Util Status info.
             GacUtilStatusInfo = GacUtil.CanFindExecutable() ? "GacUtil is installed" :
@@ -161,8 +163,11 @@ namespace GACManager
                 OpenAssemblyLocationCommand.CanExecute = value != null;
                 ShowFilePropertiesCommand.CanExecute = value != null;
                 CopyDisplayNameCommand.CanExecute = value != null;
-                if(SelectedAssembly != null)
-                    SelectedAssembly.LoadExtendedPropertiesCommand.DoExecute(null);
+                ShowAssemblyDetailsCommand.CanExecute = value != null;
+
+                //  Currently, we do not load extended properties.
+                //if(SelectedAssembly != null)
+                //    SelectedAssembly.LoadExtendedPropertiesCommand.DoExecute(null);
             }
         }
 
@@ -258,6 +263,43 @@ namespace GACManager
             private set;
         }
 
+        
+
+        /// <summary>
+        /// Performs the ShowAssemblyDetails command.
+        /// </summary>
+        /// <param name="parameter">The ShowAssemblyDetails command parameter.</param>
+        private void DoShowAssemblyDetailsCommand(object parameter)
+        {
+        }
+
+        /// <summary>
+        /// Gets the ShowAssemblyDetails command.
+        /// </summary>
+        /// <value>The value of .</value>
+        public Command ShowAssemblyDetailsCommand
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Performs the Help command.
+        /// </summary>
+        /// <param name="parameter">The Help command parameter.</param>
+        private void DoHelpCommand(object parameter)
+        {
+        }
+
+        /// <summary>
+        /// Gets the Help command.
+        /// </summary>
+        /// <value>The value of .</value>
+        public Command HelpCommand
+        {
+            get;
+            private set;
+        }
 
 
         /// <summary>

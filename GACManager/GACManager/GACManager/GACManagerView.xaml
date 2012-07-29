@@ -23,6 +23,8 @@
         <BitmapImage x:Key="ImageSourceProperties" UriSource="/GACManager;component/Images/Properties.png" />
         <BitmapImage x:Key="ImageSourceUninstallAssembly" UriSource="/GACManager;component/Images/UninstallAssembly.png" />
         <BitmapImage x:Key="ImageSourceOpenFolder" UriSource="/GACManager;component/Images/OpenFolder.png" />
+        <BitmapImage x:Key="ImageSourceDetails" UriSource="/GACManager;component/Images/Details.png" />
+        <BitmapImage x:Key="ImageSourceHelp" UriSource="/GACManager;component/Images/Help.png" />
         
         <!-- A style for small icons. -->
         <Style x:Key="StyleIcon" TargetType="{x:Type Image}">
@@ -64,10 +66,23 @@
                         Command="{Binding InstallAssemblyCommand}">
                         <Image Source="{StaticResource ImageSourceInstallAssembly}" Style="{StaticResource StyleIcon}" />
                     </Button>
+
+                    <Button 
+                        ToolTip="Help and Project Home"
+                        Command="{Binding HelpCommand}">
+                        <Image Source="{StaticResource ImageSourceHelp}" Style="{StaticResource StyleIcon}" />
+                    </Button>
                     
                     <Separator />
-                    
+
                     <!-- The next set of commands are assembly specific.-->
+                    <Button 
+                        ToolTip="Show Details" 
+                        Command="{Binding ShowAssemblyDetailsCommand}"
+                        CommandParameter="{Binding SelectedAssembly}">
+                        <Image Source="{StaticResource ImageSourceDetails}" Style="{StaticResource StyleIcon}" />
+                    </Button>
+                    
                     <Button 
                         ToolTip="Copy Display Name (e.g. for gacutil)" 
                         Command="{Binding CopyDisplayNameCommand}"
@@ -130,6 +145,14 @@
                                 <apexBehaviours:ListViewItemContextMenuBehaviour.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem 
+                                            Header="Show Details" 
+                                            Command="{Binding ShowAssemblyDetailsCommand, Source={StaticResource MainViewModel}}"
+                                            CommandParameter="{Binding}">
+                                            <MenuItem.Icon>
+                                                <Image Source="{StaticResource ImageSourceDetails}" Style="{StaticResource StyleIcon}" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem 
                                             Header="Copy Display Name (e.g. for gacutil)" 
                                             Command="{Binding CopyDisplayNameCommand, Source={StaticResource MainViewModel}}"
                                             CommandParameter="{Binding}">
@@ -182,7 +205,10 @@
                                 </GridViewColumn>
                                 <GridViewColumn Header="Version" DisplayMemberBinding="{Binding Version}" />
                                 <GridViewColumn Header="Public Key Token" DisplayMemberBinding="{Binding PublicKeyToken}" />
+                                
+                                <!-- Runtime version is currently disabled.
                                 <GridViewColumn Header="RuntimeVersion" DisplayMemberBinding="{Binding RuntimeVersion}" />
+                                 -->
                                 <GridViewColumn Header="Culture" DisplayMemberBinding="{Binding Culture}" />
                                 <GridViewColumn Header="Processor Architecture" DisplayMemberBinding="{Binding ProcessorArchitecture}" />
                                 <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path}" />
@@ -191,8 +217,21 @@
                         </ListView.View>
                     </ListView>
                     
-                    <Border Background="#66ffffff" Visibility="{Binding RefreshAssembliesCommand.IsExecuting, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <apexControls:CircularProgressBar Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <Border Background="#ffffff" Visibility="{Binding RefreshAssembliesCommand.IsExecuting, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                        <apexControls:ApexGrid Rows="Auto,Auto" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            
+                            <apexControls:CircularProgressBar
+                                Grid.Row="0"
+                                Width="32" Height="32" HorizontalAlignment="Center" />
+                            
+                            <TextBlock
+                                Grid.Row="1"
+                                Text="Loading Assembly Details..."
+                                HorizontalAlignment="Center"
+                                Margin="4" />
+
+                        </apexControls:ApexGrid>
                     </Border>
                     
                 </apexControls:ApexGrid>
