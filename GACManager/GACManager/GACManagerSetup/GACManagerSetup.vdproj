@@ -39,7 +39,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_D7F99C0AE595FD1F927D5A1CB4BBC929"
+        "MsmKey" = "8:_CD4A5E80C30D74CA5899F8F36D56DA03"
         "OwnerKey" = "8:_96FF66C9CFF041BD9A9C661FF85470DB"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -52,13 +52,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_96FF66C9CFF041BD9A9C661FF85470DB"
+        "OwnerKey" = "8:_CD4A5E80C30D74CA5899F8F36D56DA03"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D7F99C0AE595FD1F927D5A1CB4BBC929"
+        "OwnerKey" = "8:_96FF66C9CFF041BD9A9C661FF85470DB"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -192,18 +192,13 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D7F99C0AE595FD1F927D5A1CB4BBC929"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CD4A5E80C30D74CA5899F8F36D56DA03"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:GACManagerApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_D7F99C0AE595FD1F927D5A1CB4BBC929"
-                    {
-                    "Name" = "8:GACManagerApi.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:GACManagerApi.dll"
             "TargetName" = "8:"
@@ -291,7 +286,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:GAC Manager"
         "ProductCode" = "8:{6059D4AD-62B7-4E5E-91E5-D092F10197D3}"
-        "PackageCode" = "8:{4E79BEAA-00A5-4829-A711-207817780C00}"
+        "PackageCode" = "8:{EB6DE477-C217-4547-BC32-52BAC9314925}"
         "UpgradeCode" = "8:{91302E10-5730-403D-890B-F0693747D9FE}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -826,7 +821,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_96FF66C9CFF041BD9A9C661FF85470DB"
             {
-            "SourcePath" = "8:..\\GACManager\\obj\\x86\\Debug\\GACManager.exe"
+            "SourcePath" = "8:..\\GACManager\\obj\\x86\\Release\\GACManager.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0DA8DB4B3DF0430BBABCD6D1F0A392E5"
