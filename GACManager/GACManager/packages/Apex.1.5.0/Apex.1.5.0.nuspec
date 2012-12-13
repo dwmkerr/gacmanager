@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Apex</id>
+    <version>1.5.0</version>
+    <title>Apex</title>
+    <authors>Dave Kerr</authors>
+    <owners>Dave Kerr</owners>
+    <projectUrl>http://apex.codeplex.com/</projectUrl>
+    <iconUrl>http://www.dwmkerr.com/apex/NugetPackageIcon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Apex is a Control, MVVM and Utility library for WPF, Silverlight and Windows Phone projects. It provides a standardised framework for quick and effective MVVM based development.</description>
+    <releaseNotes>Full details at:
+http://apex.codeplex.com/releases/view/98157</releaseNotes>
+    <copyright>Copyright © 2012 Dave Kerr</copyright>
+    <tags>Apex,MVVM,WPF,Silverlight</tags>
+  </metadata>
+</package>
