@@ -5,7 +5,7 @@ The GAC Manager Application
 
 The GAC Manager Application is designed to offer fast access to the GAC. A lean application lets you search for assemblies quickly and get important information you need.
 
-1_TheGacManagerTool.png
+![GAC Manager Screenshot](./docs/Home_1_TheGacManagerTool.png)
 
 ## The GAC Manager API
 
