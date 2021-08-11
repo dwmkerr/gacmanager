@@ -1,5 +1,7 @@
 # GAC Manager
 
+[![GuardRails badge](https://badges.production.guardrails.io/dwmkerr/gacmanager.svg)](https://www.guardrails.io)
+
 GAC Manager is an open source project that comes in two parts - a fully functional application to manage the Global Assembly Cache on your computer, and a C# API to allow you to manage the GAC yourself.
 The GAC Manager Application
 
