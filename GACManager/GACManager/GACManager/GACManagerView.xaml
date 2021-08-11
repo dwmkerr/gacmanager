@@ -98,9 +98,9 @@
                     </Button>
 
                     <Button 
-                        ToolTip="Uninstall the selected assembly"
-                        Command="{Binding UninstallAssemblyCommand}"
-                        CommandParameter="{Binding SelectedAssembly}">
+                        Name="btnUninstall"
+                        ToolTip="Uninstall selected assemblies"
+                        Command="{Binding UninstallAssemblyCommand}">
                         <Image Source="{StaticResource ImageSourceUninstallAssembly}" Style="{StaticResource StyleIcon}" />
                     </Button>
                     
@@ -138,7 +138,7 @@
             <!-- The main list view of assemblies. -->
                 <apexControls:ApexGrid Columns="*">
                     <ListView ItemsSource="{Binding AssembliesCollectionView}" SelectedItem="{Binding SelectedAssembly}"
-                              MouseDoubleClick="ListView_MouseDoubleClick">
+                              MouseDoubleClick="ListView_MouseDoubleClick" Name="listView">
 
                         <i:Interaction.Behaviors>
                             <apexBehaviours:ListViewItemContextMenuBehaviour x:Name="parent">

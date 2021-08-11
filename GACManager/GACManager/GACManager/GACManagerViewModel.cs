@@ -11,6 +11,7 @@ using Apex.MVVM;
 using GACManager.Models;
 using GACManagerApi;
 using GACManagerApi.Fusion;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace GACManager
 {
@@ -83,16 +84,10 @@ namespace GACManager
 
         }
 
-        private bool Filter(object o)
-        {
-            var assemblyViewModel = o as GACAssemblyViewModel;
-            if (assemblyViewModel == null)
-                return false;
-
-            return string.IsNullOrEmpty(SearchText) ||
-                assemblyViewModel.DisplayName.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1 ||
-                assemblyViewModel.PublicKeyToken.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) != -1;
-        }
+        private bool Filter(object o) => o is GACAssemblyViewModel assemblyViewModel
+                                         && (string.IsNullOrEmpty(SearchText)
+                                             || LikeOperator.LikeString(assemblyViewModel.DisplayName, SearchText, Microsoft.VisualBasic.CompareMethod.Text)
+                                             || LikeOperator.LikeString(assemblyViewModel.PublicKeyToken, SearchText, Microsoft.VisualBasic.CompareMethod.Text));
 
         /// <summary>
         /// The Assemblies observable collection.
