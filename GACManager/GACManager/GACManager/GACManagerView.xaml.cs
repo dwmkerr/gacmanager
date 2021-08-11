@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -6,6 +7,8 @@ using System.Windows.Input;
 using Microsoft.Win32;
 using GACManagerApi.Fusion;
 using GACManagerApi;
+using System.Linq;
+using System.Text;
 
 namespace GACManager
 {
@@ -55,57 +58,81 @@ namespace GACManager
 
         void UninstallAssemblyCommand_Executing(object sender, Apex.MVVM.CancelCommandEventArgs args)
         {
-            //  Double check with the user.
-            args.Cancel = MessageBox.Show("Are you sure you want to uninstall this assembly?", "Are you sure?",
-                                          MessageBoxButton.YesNoCancel)
-                          != MessageBoxResult.Yes;
+            if (MessageBox.Show("Are you sure uninstall selected assemblies?", "Are you sure?", MessageBoxButton.YesNo)
+                != MessageBoxResult.Yes)
+            {
+                args.Cancel = true;
+                return;
+            }
+
+            args.Parameter = listView.SelectedItems;
         }
 
         void UninstallAssemblyCommand_Executed(object sender, Apex.MVVM.CommandEventArgs args)
         {
-            //  The parameter must be an assembly.
-            var assemblyViewModel = (GACAssemblyViewModel)args.Parameter;
+            var sb = new StringBuilder();
+            var okCount = 0;
+            var errCount = 0;
 
+            //todo progress report
+            foreach (var model in (args.Parameter as IList)!.Cast<GACAssemblyViewModel>())
+            {
+                if (ProcessUninstall(model, out var errorMsg))
+                {
+                    //  Remove the assembly from the vm.
+                    ViewModel.Assemblies.Remove(model); //todo not work
+                    okCount++;
+                }
+                else
+                {
+                    sb.AppendLine($"{model.FullName}: {errorMsg};");
+                    errCount++;
+                }
+            }
+
+            var msg = errCount== 0
+                ? "Successfully uninstalled."
+                : $"{okCount} uninstalled, {errCount} failed:\r\n{sb}";
+
+            MessageBox.Show(msg, "Uninstall");
+
+            //todo not work
+            ViewModel.AssembliesCollectionView.Refresh();
+        }
+
+        // Consider this will use in loop, so use bool as flag instead of throw ex for better performance
+        bool ProcessUninstall(GACAssemblyViewModel assemblyViewModel,out string message)
+        {
             //  Create an assembly cache.
             IASSEMBLYCACHE_UNINSTALL_DISPOSITION disposition = IASSEMBLYCACHE_UNINSTALL_DISPOSITION.Unknown;
             AssemblyCache.UninstallAssembly(assemblyViewModel.InternalAssemblyDescription.DisplayName,
                 null, out disposition);
 
             //  Depending on the result, show the appropriate message.
-            string message = string.Empty;
             switch (disposition)
             {
-                case IASSEMBLYCACHE_UNINSTALL_DISPOSITION.Unknown:
-                    message = "Failed to uninstall assembly.";
-                    break;
                 case IASSEMBLYCACHE_UNINSTALL_DISPOSITION.IASSEMBLYCACHE_UNINSTALL_DISPOSITION_UNINSTALLED:
                     message = "The assembly was uninstalled successfully!";
-                    break;
+                    return true;
                 case IASSEMBLYCACHE_UNINSTALL_DISPOSITION.IASSEMBLYCACHE_UNINSTALL_DISPOSITION_STILL_IN_USE:
                     message = "Cannot uninstall this assembly - it is in use.";
-                    break;
+                    return false;
                 case IASSEMBLYCACHE_UNINSTALL_DISPOSITION.IASSEMBLYCACHE_UNINSTALL_DISPOSITION_ALREADY_UNINSTALLED:
                     message = "Cannot uninstall this assembly - it has already been uninstalled.";
-                    break;
+                    return false;
                 case IASSEMBLYCACHE_UNINSTALL_DISPOSITION.IASSEMBLYCACHE_UNINSTALL_DISPOSITION_DELETE_PENDING:
                     message = "Cannot uninstall this assembly - it has has a delete pending.";
-                    break;
+                    return false;
                 case IASSEMBLYCACHE_UNINSTALL_DISPOSITION.IASSEMBLYCACHE_UNINSTALL_DISPOSITION_HAS_INSTALL_REFERENCES:
                     message = "Cannot uninstall this assembly - it was installed as part of another product.";
-                    break;
+                    return false;
                 case IASSEMBLYCACHE_UNINSTALL_DISPOSITION.IASSEMBLYCACHE_UNINSTALL_DISPOSITION_REFERENCE_NOT_FOUND:
                     message = "Cannot uninstall this assembly - cannot find the assembly.";
-                    break;
+                    return false;
                 default:
-                    break;
+                    message = "Failed to uninstall assembly.";
+                    return false;
             }
-
-            //  Remove the assembly from the vm.
-            ViewModel.Assemblies.Remove(assemblyViewModel);
-            ViewModel.AssembliesCollectionView.Refresh();
-
-            //  Show the message box.
-            MessageBox.Show(message, "Uninstall");
         }
 
         void InstallAssemblyCommand_Executed(object sender, Apex.MVVM.CommandEventArgs args)
